@@ -8,6 +8,7 @@ export const Route = createFileRoute('/urql')({
   errorComponent: ErrorComponent,
 })
 
+// Main component for displaying charities
 function Urql() {
   const [result, reexecuteQuery] = useQuery<CharitiesData>({
     query: charitiesQuery,
@@ -32,6 +33,7 @@ function Urql() {
   )
 }
 
+// Component for rendering individual charity cards
 function CharityCard({ charity }: { charity: { id: string; name: string } }) {
   return (
     <div className="bg-gray-800 shadow-md rounded-lg p-4">
@@ -41,6 +43,7 @@ function CharityCard({ charity }: { charity: { id: string; name: string } }) {
   )
 }
 
+// Skeleton component for loading state
 function CharityCardSkeleton() {
   return (
     <div className="bg-gray-800 shadow-md rounded-lg p-5 space-y-4 animate-pulse">
@@ -50,6 +53,7 @@ function CharityCardSkeleton() {
   )
 }
 
+// Error component for handling and displaying errors
 export default function ErrorComponent({ error, info, reset }: ErrorComponentProps) {
   return (
     <div className="min-h-screen bg-red-50 flex items-center justify-center p-4">
