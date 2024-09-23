@@ -1,5 +1,6 @@
 import { Link, Outlet, createRootRoute } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/router-devtools'
+import UrqlSSRProvider from '../urql/urql-ssr-provider'
 
 export const Route = createRootRoute({
   component: RootComponent,
@@ -31,9 +32,20 @@ function RootComponent() {
           }}>
           Contact
         </Link>
+        <Link
+          to="/urql"
+          activeProps={{
+            className: 'font-bold',
+          }}>
+          Urql
+        </Link>
       </div>
+
       <hr />
-      <Outlet />
+
+      <UrqlSSRProvider>
+        <Outlet />
+      </UrqlSSRProvider>
       <TanStackRouterDevtools position="bottom-right" />
     </>
   )

@@ -13,6 +13,7 @@ import { createFileRoute } from '@tanstack/react-router'
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as UrqlImport } from './routes/urql'
 import { Route as ContactImport } from './routes/contact'
 import { Route as IndexImport } from './routes/index'
 
@@ -26,6 +27,11 @@ const AboutLazyRoute = AboutLazyImport.update({
   path: '/about',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/about.lazy').then((d) => d.Route))
+
+const UrqlRoute = UrqlImport.update({
+  path: '/urql',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const ContactRoute = ContactImport.update({
   path: '/contact',
@@ -55,6 +61,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContactImport
       parentRoute: typeof rootRoute
     }
+    '/urql': {
+      id: '/urql'
+      path: '/urql'
+      fullPath: '/urql'
+      preLoaderRoute: typeof UrqlImport
+      parentRoute: typeof rootRoute
+    }
     '/about': {
       id: '/about'
       path: '/about'
@@ -70,12 +83,14 @@ declare module '@tanstack/react-router' {
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/contact': typeof ContactRoute
+  '/urql': typeof UrqlRoute
   '/about': typeof AboutLazyRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/contact': typeof ContactRoute
+  '/urql': typeof UrqlRoute
   '/about': typeof AboutLazyRoute
 }
 
@@ -83,27 +98,30 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/contact': typeof ContactRoute
+  '/urql': typeof UrqlRoute
   '/about': typeof AboutLazyRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/contact' | '/about'
+  fullPaths: '/' | '/contact' | '/urql' | '/about'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/contact' | '/about'
-  id: '__root__' | '/' | '/contact' | '/about'
+  to: '/' | '/contact' | '/urql' | '/about'
+  id: '__root__' | '/' | '/contact' | '/urql' | '/about'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ContactRoute: typeof ContactRoute
+  UrqlRoute: typeof UrqlRoute
   AboutLazyRoute: typeof AboutLazyRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ContactRoute: ContactRoute,
+  UrqlRoute: UrqlRoute,
   AboutLazyRoute: AboutLazyRoute,
 }
 
@@ -121,6 +139,7 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/contact",
+        "/urql",
         "/about"
       ]
     },
@@ -129,6 +148,9 @@ export const routeTree = rootRoute
     },
     "/contact": {
       "filePath": "contact.tsx"
+    },
+    "/urql": {
+      "filePath": "urql.tsx"
     },
     "/about": {
       "filePath": "about.lazy.tsx"

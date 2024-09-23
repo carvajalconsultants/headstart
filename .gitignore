@@ -11,6 +11,8 @@ dist/
 .vercel
 .netlify
 .wrangler
+.env
+.env.local
 
 # IDE
 .vscode/*
