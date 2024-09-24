@@ -20,6 +20,9 @@
   "dependencies": {
     "@tanstack/react-router": "^1.58.3",
     "@tanstack/router-devtools": "^1.58.3",
+    "grafserv": "^0.1.1-beta.13",
+    "graphql-ws": "^5.16.0",
+    "h3": "^1.12.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "urql": "^4.1.0"
