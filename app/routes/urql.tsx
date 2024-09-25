@@ -1,7 +1,7 @@
 import { createFileRoute, ErrorComponentProps } from '@tanstack/react-router'
-import { gql, useQuery } from 'urql'
-import { CharitiesData } from '../types'
+import { useQuery } from 'urql'
 import { charitiesQuery } from '../services/queries/charities'
+import { CharitiesData } from '../types'
 
 export const Route = createFileRoute('/urql')({
   component: Urql,
@@ -19,15 +19,7 @@ function Urql() {
   return (
     <div className="p-2">
       <h1 className="text-2xl font-bold mb-4">Charities</h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {fetching
-          ? Array.from({ length: 12 }).map((_, index) => (
-              <CharityCardSkeleton key={index} />
-            ))
-          : data?.charities.edges.map(edge => (
-              <CharityCard key={edge.node.id} charity={edge.node} />
-            ))}
-      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">{fetching ? Array.from({ length: 12 }).map((_, index) => <CharityCardSkeleton key={index} />) : data?.charities.edges.map(edge => <CharityCard key={edge.node.id} charity={edge.node} />)}</div>
       {error && <p className="text-red-500 mt-4">Oh no... {error.message}</p>}
     </div>
   )
@@ -61,20 +53,13 @@ export default function ErrorComponent({ error, info, reset }: ErrorComponentPro
         <h1 className="text-3xl font-bold text-red-600 mb-4">Oops! Something went wrong</h1>
         <div className="mb-4">
           <h2 className="text-xl font-semibold text-red-800 mb-2">Error Details:</h2>
-          <pre className="bg-red-100 p-3 rounded-md text-sm overflow-x-auto">
-            {JSON.stringify(error, null, 2)}
-          </pre>
+          <pre className="bg-red-100 p-3 rounded-md text-sm overflow-x-auto">{JSON.stringify(error, null, 2)}</pre>
         </div>
         <div className="mb-6">
           <h2 className="text-xl font-semibold text-red-800 mb-2">Additional Information:</h2>
-          <pre className="bg-red-100 p-3 rounded-md text-sm overflow-x-auto">
-            {JSON.stringify(info, null, 2)}
-          </pre>
+          <pre className="bg-red-100 p-3 rounded-md text-sm overflow-x-auto">{JSON.stringify(info, null, 2)}</pre>
         </div>
-        <button
-          onClick={reset}
-          className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
-        >
+        <button onClick={reset} className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50">
           Try Again
         </button>
       </div>

@@ -1,6 +1,6 @@
 import { createError, eventHandler, getHeader } from 'h3'
-import { makeWsHandler } from '../websocket'
 import { serv } from '../graphile/serv'
+import { makeWsHandler } from '../websocket'
 
 export default eventHandler({
   /**
@@ -14,5 +14,5 @@ export default eventHandler({
   /**
    * WS request handler
    */
-  websocket: makeWsHandler(serv),
+  websocket: makeWsHandler(serv as any),
 })

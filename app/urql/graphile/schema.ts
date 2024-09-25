@@ -1,5 +1,5 @@
 import { GrafservConfig } from 'grafserv'
-import { GraphQLSchema, GraphQLObjectType, GraphQLString } from 'graphql'
+import { GraphQLObjectType, GraphQLSchema, GraphQLString } from 'graphql'
 
 const queryType = new GraphQLObjectType({
   name: 'Query',
@@ -13,5 +13,4 @@ const queryType = new GraphQLObjectType({
 
 export const schema: GrafservConfig['schema'] = new GraphQLSchema({
   query: queryType,
-  
 })

@@ -1,8 +1,9 @@
-import { createServer } from 'node:http'
-import { createApp, eventHandler, toNodeListener } from 'h3'
 import { grafserv } from 'grafserv/h3/v1'
-import { preset } from './preset.js'
-import { schema } from './schema.js'
+import { createApp, toNodeListener } from 'h3'
+import { createServer } from 'node:http'
+import { schema } from './schema'
+import { preset } from './preset'
+import { GrafservBase } from 'postgraphile/grafserv'
 
 // create a h3 app
 const app = createApp()
