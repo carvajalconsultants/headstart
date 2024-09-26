@@ -1,12 +1,10 @@
 // app/routes/__root.tsx
-import { createRootRoute, Link } from '@tanstack/react-router'
-import { Outlet, ScrollRestoration } from '@tanstack/react-router'
+import { createRootRoute, Link, Outlet, ScrollRestoration } from '@tanstack/react-router'
 import { Body, Head, Html, Meta, Scripts } from '@tanstack/start'
 import * as React from 'react'
-import UrqlSSRProvider from '../urql/urql-ssr-provider'
 import appCss from '~/styles/app.css?url'
 import { seo } from '~/utils/seo'
-import { ToPathOption } from '@tanstack/react-router'
+import UrqlSSRProvider from '../urql/urql-ssr-provider'
 
 export const Route = createRootRoute({
   meta: () => [
@@ -83,6 +81,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
     { to: '/', label: 'Home', exact: true },
     { to: '/about', label: 'About' },
     { to: '/contact', label: 'Contact' },
+    { to: '/urql', label: 'Urql' },
     { to: '/layout-a', label: 'Layout' },
     { to: '/deferred', label: 'Deferred' },
     { to: '/this-route-does-not-exist', label: 'This Route Does Not Exist', tsExpectError: true },

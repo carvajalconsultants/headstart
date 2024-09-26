@@ -21,7 +21,7 @@ const client = new Client({
   // Optimize for the best user experience, we want to show the data as fast as possible
   requestPolicy: 'cache-and-network',
 
-  exchanges: [cacheExchange, ssr, fetchExchange, grafastExchange],
+  exchanges: [cacheExchange, ssr, grafastExchange, fetchExchange],
 })
 
 export default client

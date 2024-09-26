@@ -10,8 +10,19 @@ export const preset: GraphileConfig.Preset = {
   grafserv: {
     port: 5678,
     host: 'localhost',
+    graphqlPath: '/graphql',
+    websockets: true,
+    graphqlOverGET: true,
   },
   grafast: {
+    // context(requestContext, args) {
+    //   return {
+    //     pgSettings: {
+    //       role: "aq_edu_srm_anonymous",
+    //       ...args.contextValue?.pgSettings,
+    //     },
+    //   }
+    // }
     async context(ctx, args) {
       // on REST api, use h3event context, on WS, make a falsy h3event
       // @ts-expect-error ws in context

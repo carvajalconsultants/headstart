@@ -1,21 +1,61 @@
-import { Exchange } from '@urql/core'
+import { CombinedError, Exchange, Operation, OperationResult } from '@urql/core'
+import { execute } from 'grafast'
+import { fromPromise, mergeMap, pipe } from 'wonka'
+import { schema } from './graphile/schema'
 
-// TODO: will work on it as needed
-export const grafastExchange: Exchange = ({ client, forward }) => {
-  return operations$ => {
-    // <-- The ExchangeIO function
-    // We receive a stream of Operations from `cacheExchange` which
-    // we can modify before...
-    const forwardOperations$ = operations$
+console.log('Importing schema:', schema)
 
-    // ...calling `forward` with the modified stream. The `forward`
-    // function is the next exchange's `ExchangeIO` function, in this
-    // case `fetchExchange`.
-    const operationResult$ = forward(operations$)
+export const grafastExchange: Exchange = () => ops$ => {
+  return pipe(
+    ops$,
+    mergeMap(operation => fromPromise(runGrafastQuery(operation)))
+  )
+}
 
-    // We get back `fetchExchange`'s stream of results, which we can
-    // also change before returning, which is what `cacheExchange`
-    // will receive when calling `forward`.
-    return operationResult$
+async function runGrafastQuery<T>(operation: Operation<T>): Promise<OperationResult<T>> {
+  try {
+    const schemaInstance = await schema
+    const result = await execute({
+      schema: schemaInstance,
+      document: operation.query,
+      variableValues: operation.variables ?? {},
+    })
+
+    if (!result || typeof result !== 'object' || !('data' in result)) {
+      throw new Error('Unexpected result format from execute')
+    }
+
+    const { data, errors, extensions } = result
+
+    if (errors && errors.length > 0) {
+      return {
+        operation,
+        data: data as T,
+        error: new CombinedError({ graphQLErrors: [...errors] }),
+        extensions,
+        stale: false,
+        hasNext: false,
+      }
+    }
+
+    return {
+      operation,
+      data: data as T,
+      error: undefined,
+      extensions,
+      stale: false,
+      hasNext: false,
+    }
+  } catch (error) {
+    return {
+      operation,
+      data: undefined,
+      error: new CombinedError({
+        networkError: error instanceof Error ? error : new Error(String(error)),
+      }),
+      extensions: undefined,
+      stale: false,
+      hasNext: false,
+    }
   }
 }
