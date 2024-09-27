@@ -1,18 +1,18 @@
-import { CombinedError, Exchange, Operation, OperationResult } from '@urql/core'
 import { execute } from 'grafast'
+import { CombinedError, Exchange, Operation, OperationResult } from 'urql'
 import { fromPromise, mergeMap, pipe } from 'wonka'
 import { schema } from './graphile/schema'
 
-console.log('Importing schema:', schema)
+export const grafastExchange: Exchange =
+  ({ forward }) =>
+  ops$ => {
+    return pipe(
+      ops$,
+      mergeMap(operation => fromPromise(runGrafastQuery(operation)))
+    )
+  }
 
-export const grafastExchange: Exchange = () => ops$ => {
-  return pipe(
-    ops$,
-    mergeMap(operation => fromPromise(runGrafastQuery(operation)))
-  )
-}
-
-async function runGrafastQuery<T>(operation: Operation<T>): Promise<OperationResult<T>> {
+async function runGrafastQuery(operation: Operation): Promise<OperationResult> {
   try {
     const schemaInstance = await schema
     const result = await execute({
@@ -27,10 +27,12 @@ async function runGrafastQuery<T>(operation: Operation<T>): Promise<OperationRes
 
     const { data, errors, extensions } = result
 
+    console.log('result :', result)
+
     if (errors && errors.length > 0) {
       return {
         operation,
-        data: data as T,
+        data,
         error: new CombinedError({ graphQLErrors: [...errors] }),
         extensions,
         stale: false,
@@ -40,7 +42,7 @@ async function runGrafastQuery<T>(operation: Operation<T>): Promise<OperationRes
 
     return {
       operation,
-      data: data as T,
+      data,
       error: undefined,
       extensions,
       stale: false,
