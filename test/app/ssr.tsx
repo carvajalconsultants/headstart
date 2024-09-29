@@ -10,16 +10,16 @@ import { createCustomHandler } from './middlewareHandler'
 import { createRouter } from './router'
 
 
-const handler = createStartHandler({
-  createRouter,
-  getRouterManifest,
-})
-
-const customHandler = createCustomHandler(handler)
-
-export default customHandler(defaultStreamHandler)
-
-// export default createStartHandler({
+// const handler = createStartHandler({
 //   createRouter,
 //   getRouterManifest,
-// })(defaultStreamHandler)
+// })
+
+// const customHandler = createCustomHandler(handler)
+
+// export default customHandler(defaultStreamHandler)
+
+export default createStartHandler({
+  createRouter,
+  getRouterManifest,
+})(defaultStreamHandler)
