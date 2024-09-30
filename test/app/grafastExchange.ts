@@ -4,7 +4,7 @@ import { fromPromise, mergeMap, pipe } from 'wonka'
 import { schema } from '../graphQLRouteHandler'
 
 export const grafastExchange: Exchange =
-  ({ forward }) =>
+  () =>
   ops$ => {
     return pipe(
       ops$,
@@ -49,6 +49,8 @@ async function runGrafastQuery(operation: Operation): Promise<OperationResult> {
       hasNext: false,
     }
   } catch (error) {
+    console.error('Error in runGrafastQuery:', error)
+
     return {
       operation,
       data: undefined,

@@ -14,8 +14,8 @@ export const ssr = ssrExchange({
 const client = new Client({
   url: 'http://localhost:3000/api',
   requestPolicy: 'cache-and-network',
-  // exchanges: [cacheExchange, ssr, grafastExchange, fetchExchange],
-  exchanges: [cacheExchange, grafastExchange, fetchExchange],
+  // exchanges: [cacheExchange, ssr, fetchExchange],
+  exchanges: [cacheExchange,ssr, grafastExchange, fetchExchange],
 })
 
 export default client
