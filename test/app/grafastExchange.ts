@@ -1,7 +1,7 @@
 import { execute } from 'grafast'
-import { schema } from '../graphQLRouteHandler'
 import { CombinedError, Exchange, Operation, OperationResult } from 'urql'
 import { fromPromise, mergeMap, pipe } from 'wonka'
+import { schema } from '../graphQLRouteHandler'
 
 export const grafastExchange: Exchange =
   ({ forward }) =>

@@ -9,11 +9,12 @@ export const Route = createFileRoute('/urql')({
 
 // Main component for displaying charities
 function Urql() {
-  const [result, reexecuteQuery] = useQuery({
+  const [result, reExecuteQuery] = useQuery({
     query: charitiesQuery,
   })
 
   const { data, fetching, error } = result
+  console.log('result :', result);
 
   return (
     <div className="p-2">
