@@ -1,1 +1,1 @@
-export * from "./graphQLRouteHandler";
+export * from "./test/graphQLRouteHandler";
