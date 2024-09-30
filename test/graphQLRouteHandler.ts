@@ -11,6 +11,12 @@ import { CloseCode, makeServer } from 'graphql-ws';
 import { makeGraphQLWSConfig } from 'postgraphile/grafserv';
 import type { WebSocket } from 'ws';
 
+/**
+ * TODO: make it generic when crossws implements the WS API (Peer.close, Peer.protocol)
+ * instead of accessing the socket directly through context (server agnostic)
+ * https://github.com/unjs/crossws/issues/23
+ * https://github.com/unjs/crossws/issues/16
+ */
 function makeWsHandler(instance: H3Grafserv): Partial<Hooks> {
   const graphqlWsServer = makeServer(makeGraphQLWSConfig(instance));
   const open = (peer: Peer<{ node: { ws: WebSocket; req: IncomingMessage } }>) => {
