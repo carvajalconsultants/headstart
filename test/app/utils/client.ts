@@ -1,7 +1,8 @@
 import { Client, cacheExchange, fetchExchange } from 'urql'
-import { GRAPHQL_SERVICE_URL } from '../constants'
-import { grafastExchange } from '../lib/grafastExchange'
+import { grafastExchange } from '../grafastExchange'
 import { ssr } from './common'
+
+export const GRAPHQL_SERVICE_URL = `http://localhost:3000/api`
 
 const client = new Client({
   url: GRAPHQL_SERVICE_URL,
