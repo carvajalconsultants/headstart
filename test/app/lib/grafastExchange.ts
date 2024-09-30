@@ -1,8 +1,11 @@
 import { execute } from 'grafast'
 import { CombinedError, Exchange, Operation, OperationResult } from 'urql'
 import { fromPromise, mergeMap, pipe } from 'wonka'
-import { schema } from './pgl'
-import * as postgraphile from 'postgraphile'
+
+// TODO: If we import from ./pgl then it doesn't show the result
+// TODO: If we make custom schema and query then it works.
+// import { schema } from './pgl'
+import { schema } from './schema'
 
 export const grafastExchange: Exchange =
   ({ forward }) =>
