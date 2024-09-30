@@ -2,7 +2,7 @@
 import { createRootRoute, Outlet, ScrollRestoration } from '@tanstack/react-router'
 import { Body, Head, Html, Meta, Scripts } from '@tanstack/start'
 import * as React from 'react'
-import UrqlSSRProvider from '../urql-ssr-provider'
+import { GraphProvider } from '../graphql/provider'
 
 export const Route = createRootRoute({
   meta: () => [
@@ -23,9 +23,9 @@ export const Route = createRootRoute({
 function RootComponent() {
   return (
     <RootDocument>
-      <UrqlSSRProvider>
+      <GraphProvider>
         <Outlet />
-      </UrqlSSRProvider>
+      </GraphProvider>
     </RootDocument>
   )
 }
