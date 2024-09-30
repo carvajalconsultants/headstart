@@ -55,9 +55,8 @@ export const createGraphQLRouteHandler = (preset: GraphileConfig.Preset) => {
 
   return eventHandler({
     handler: async (event) => {
-      console.log("Handling GraphQL event", event);
-
       const acceptHeader = getHeader(event, 'accept');
+
       if (acceptHeader === 'text/event-stream') {
         return serv.handleEventStreamEvent(event);
       } else {
