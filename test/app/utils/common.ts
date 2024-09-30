@@ -1,6 +1,4 @@
 import { ssrExchange } from 'urql'
-import * as postgraphile from 'postgraphile'
-import preset from '../../graphile.config'
 
 import pkg from 'pg'
 
@@ -11,11 +9,6 @@ export const ssr = ssrExchange({
   isClient: !isServerSide,
   initialState: !isServerSide ? (window as any).__URQL_DATA__ : undefined,
 })
-
-// Our PostGraphile instance:
-export const pgl = postgraphile.postgraphile(preset)
-
-export const schema = pgl.getSchema()
 
 // Create a new pool
 export const pool = new Pool({

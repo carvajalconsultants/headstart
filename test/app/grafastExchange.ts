@@ -1,10 +1,8 @@
 import { execute } from 'grafast'
+import { schema } from '../graphQLRouteHandler'
 import { CombinedError, Exchange, Operation, OperationResult } from 'urql'
 import { fromPromise, mergeMap, pipe } from 'wonka'
-import { schema } from './utils/common'
 
-// TODO: If we import from ./pgl then it doesn't show the result
-// TODO: If we make custom schema and query then it works.
 export const grafastExchange: Exchange =
   ({ forward }) =>
   ops$ => {

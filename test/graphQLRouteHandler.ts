@@ -60,7 +60,7 @@ function makeWsHandler(instance: H3Grafserv): Partial<Hooks> {
 export const createGraphQLRouteHandler = (preset: GraphileConfig.Preset) => {
   console.log('Initializing GraphQL route handler')
 
-  const pgl = postgraphile.postgraphile(preset)
+  // const pgl = postgraphile.postgraphile(preset)
   const serv = pgl.createServ(grafserv)
 
   return eventHandler({
