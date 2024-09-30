@@ -1,9 +1,8 @@
-import { Client, cacheExchange, ssrExchange, fetchExchange } from 'urql'
+import { Client, cacheExchange, fetchExchange, ssrExchange } from 'urql'
 import { grafastExchange } from '../grafastExchange'
 
+import { FC, ReactElement } from 'react'
 import { Provider } from 'urql'
-import { FC, ReactElement, ReactNode } from 'react'
-
 
 export const isServerSide = typeof window === 'undefined'
 
@@ -13,7 +12,7 @@ export const ssr = ssrExchange({
 })
 
 const client = new Client({
-  url: "http://localhost:3000/api",
+  url: 'http://localhost:3000/api',
   requestPolicy: 'cache-and-network',
   // exchanges: [cacheExchange, ssr, grafastExchange, fetchExchange],
   exchanges: [cacheExchange, grafastExchange, fetchExchange],
@@ -21,5 +20,4 @@ const client = new Client({
 
 export default client
 
-
-export const GraphProvider: FC<{children: ReactElement}> = ({children}) => (<Provider value={client}>{children}</Provider>);
+export const GraphProvider: FC<{ children: ReactElement }> = ({ children }) => <Provider value={client}>{children}</Provider>

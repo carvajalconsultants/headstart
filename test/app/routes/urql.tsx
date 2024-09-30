@@ -10,20 +10,19 @@ export const Route = createFileRoute('/urql')({
 function Urql() {
   const [result, reexecuteQuery] = useQuery({
     query: gql`
-    query allCharities {
-      allCharities {
-        nodes {
-          id
-          name
+      query allCharities {
+        allCharities {
+          nodes {
+            id
+            name
+          }
         }
       }
-    }
-  `
-  ,
+    `,
   })
 
   const { data, fetching, error } = result
-  console.log('result :', result);
+  console.log('result :', result)
 
   return (
     <div className="p-2">
