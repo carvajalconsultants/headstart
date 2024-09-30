@@ -1,6 +1,5 @@
 import { createFileRoute, ErrorComponentProps } from '@tanstack/react-router'
-import { useQuery } from 'urql'
-import { charitiesQuery } from '../queries/charities'
+import { gql, useQuery } from 'urql'
 
 export const Route = createFileRoute('/urql')({
   component: Urql,
@@ -10,7 +9,17 @@ export const Route = createFileRoute('/urql')({
 // Main component for displaying charities
 function Urql() {
   const [result, reexecuteQuery] = useQuery({
-    query: charitiesQuery,
+    query: gql`
+    query allCharities {
+      allCharities {
+        nodes {
+          id
+          name
+        }
+      }
+    }
+  `
+  ,
   })
 
   const { data, fetching, error } = result
