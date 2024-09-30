@@ -11,9 +11,15 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as UrqlImport } from './routes/urql'
 import { Route as IndexImport } from './routes/index'
 
 // Create/Update Routes
+
+const UrqlRoute = UrqlImport.update({
+  path: '/urql',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const IndexRoute = IndexImport.update({
   path: '/',
@@ -31,6 +37,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
+    '/urql': {
+      id: '/urql'
+      path: '/urql'
+      fullPath: '/urql'
+      preLoaderRoute: typeof UrqlImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -38,32 +51,37 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/urql': typeof UrqlRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/urql': typeof UrqlRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/urql': typeof UrqlRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/urql'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/urql'
+  id: '__root__' | '/' | '/urql'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  UrqlRoute: typeof UrqlRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  UrqlRoute: UrqlRoute,
 }
 
 export const routeTree = rootRoute
@@ -78,11 +96,15 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/"
+        "/",
+        "/urql"
       ]
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/urql": {
+      "filePath": "urql.tsx"
     }
   }
 }
