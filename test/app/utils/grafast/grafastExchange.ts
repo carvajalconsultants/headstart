@@ -2,6 +2,7 @@ import { execute } from 'grafast'
 import { CombinedError, Exchange, Operation, OperationResult } from 'urql'
 import { fromPromise, mergeMap, pipe } from 'wonka'
 import { schema } from './pgl'
+import * as postgraphile from 'postgraphile'
 
 export const grafastExchange: Exchange =
   ({ forward }) =>
