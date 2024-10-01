@@ -12,8 +12,7 @@ import { eventHandler, getHeader } from 'vinxi/http'
 import type { WebSocket } from 'ws'
 import preset from './graphile.config'
 
-const pgl = postgraphile.postgraphile(preset)
-export const schema = pgl.getSchema()
+export const pgl = postgraphile.postgraphile(preset)
 
 /**
  * TODO: make it generic when crossws implements the WS API (Peer.close, Peer.protocol)

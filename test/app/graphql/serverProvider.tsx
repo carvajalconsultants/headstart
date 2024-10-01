@@ -1,4 +1,4 @@
-import { Client, cacheExchange, ssrExchange, fetchExchange } from 'urql'
+import { Client, ssrExchange } from 'urql'
 import { grafastExchange } from '../grafastExchange'
 
 import { Provider } from 'urql'
@@ -16,7 +16,7 @@ const client = new Client({
   url: "http://localhost:3000/api",
   requestPolicy: 'cache-and-network',
   // exchanges: [cacheExchange, ssr, grafastExchange, fetchExchange],
-  exchanges: [cacheExchange, grafastExchange, fetchExchange],
+  exchanges: [grafastExchange],
 })
 
 export default client

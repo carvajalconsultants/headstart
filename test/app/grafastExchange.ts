@@ -1,5 +1,5 @@
 import { execute } from 'grafast'
-import { schema } from '../graphQLRouteHandler'
+import { pgl } from '../graphQLRouteHandler'
 import { CombinedError, Exchange, Operation, OperationResult } from 'urql'
 import { fromPromise, mergeMap, pipe } from 'wonka'
 
@@ -14,7 +14,9 @@ export const grafastExchange: Exchange =
 
 async function runGrafastQuery(operation: Operation): Promise<OperationResult> {
   try {
-    const schemaInstance = await schema
+    const schemaInstance = await pgl.getSchema();
+    console.log(schemaInstance);
+
     const result = await execute({
       schema: schemaInstance,
       document: operation.query,
