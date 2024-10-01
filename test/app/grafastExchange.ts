@@ -3,18 +3,17 @@ import { CombinedError, Exchange, Operation, OperationResult } from 'urql'
 import { fromPromise, mergeMap, pipe } from 'wonka'
 import { schema } from '../graphQLRouteHandler'
 
-export const grafastExchange: Exchange =
-  () =>
-  ops$ => {
-    return pipe(
-      ops$,
-      mergeMap(operation => fromPromise(runGrafastQuery(operation)))
-    )
-  }
+export const grafastExchange: Exchange = () => ops$ => {
+  return pipe(
+    ops$,
+    mergeMap(operation => fromPromise(runGrafastQuery(operation)))
+  )
+}
 
 async function runGrafastQuery(operation: Operation): Promise<OperationResult> {
   try {
     const schemaInstance = await schema
+
     const result = await execute({
       schema: schemaInstance,
       document: operation.query,

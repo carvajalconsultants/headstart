@@ -13,6 +13,7 @@ import type { WebSocket } from 'ws'
 import preset from './graphile.config'
 
 const pgl = postgraphile.postgraphile(preset)
+
 export const schema = pgl.getSchema()
 
 /**
