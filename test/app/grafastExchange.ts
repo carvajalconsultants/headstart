@@ -26,7 +26,7 @@ async function runGrafastQuery(operation: Operation): Promise<OperationResult> {
 
     const { data, errors, extensions } = result
 
-    console.log('result :', result)
+    console.log('GRAFAST EXCHANGE RESULT :', result)
 
     if (errors && errors.length > 0) {
       return {
