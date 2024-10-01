@@ -1,14 +1,12 @@
 // app/routes/index.tsx
-import * as fs from 'fs'
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/start'
+import * as fs from 'fs'
 
 const filePath = 'count.txt'
 
 async function readCount() {
-  return parseInt(
-    await fs.promises.readFile(filePath, 'utf-8').catch(() => '0'),
-  )
+  return parseInt(await fs.promises.readFile(filePath, 'utf-8').catch(() => '0'))
 }
 
 const getCount = createServerFn('GET', () => {
@@ -35,8 +33,7 @@ function Home() {
         updateCount(1).then(() => {
           router.invalidate()
         })
-      }}
-    >
+      }}>
       Add 1 to {state}?
     </button>
   )

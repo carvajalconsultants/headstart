@@ -2,15 +2,14 @@ import { execute } from 'grafast'
 import { pgl } from '../graphQLRouteHandler'
 import { CombinedError, Exchange, Operation, OperationResult } from 'urql'
 import { fromPromise, mergeMap, pipe } from 'wonka'
+import { schema } from '../graphQLRouteHandler'
 
-export const grafastExchange: Exchange =
-  ({ forward }) =>
-  ops$ => {
-    return pipe(
-      ops$,
-      mergeMap(operation => fromPromise(runGrafastQuery(operation)))
-    )
-  }
+export const grafastExchange: Exchange = () => ops$ => {
+  return pipe(
+    ops$,
+    mergeMap(operation => fromPromise(runGrafastQuery(operation)))
+  )
+}
 
 async function runGrafastQuery(operation: Operation): Promise<OperationResult> {
   try {
@@ -29,7 +28,7 @@ async function runGrafastQuery(operation: Operation): Promise<OperationResult> {
 
     const { data, errors, extensions } = result
 
-    console.log('result :', result)
+    console.log('GRAFAST EXCHANGE RESULT :', result)
 
     if (errors && errors.length > 0) {
       return {
@@ -51,6 +50,8 @@ async function runGrafastQuery(operation: Operation): Promise<OperationResult> {
       hasNext: false,
     }
   } catch (error) {
+    console.error('Error in runGrafastQuery:', error)
+
     return {
       operation,
       data: undefined,

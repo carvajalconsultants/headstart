@@ -1,39 +1,37 @@
 import { createFileRoute, ErrorComponentProps } from '@tanstack/react-router'
-import { gql, useQuery } from 'urql'
+import { gql } from 'urql'
+import client from '../urql'
 
 export const Route = createFileRoute('/urql')({
   component: Urql,
+  loader: async () => {
+    const result = await client.query(
+      gql`
+        query allCharities {
+          allCharities {
+            nodes {
+              id
+              name
+            }
+          }
+        }
+      `,
+      {}
+    )
+
+    return result
+  },
+  pendingComponent: () => <div className="text-2xl font-bold text-center mt-8">Loading...</div>,
   errorComponent: ErrorComponent,
 })
 
-// Main component for displaying charities
 function Urql() {
-  const [result, reexecuteQuery] = useQuery({
-    query: gql`
-    query allCharities {
-      allCharities {
-        nodes {
-          id
-          name
-        }
-      }
-    }
-  `
-  ,
-  })
-
-  const { data, fetching, error } = result
+  const { data, error } = Route.useLoaderData()
 
   return (
     <div className="p-2">
       <h1 className="text-2xl font-bold mb-4">Charities</h1>
-      {fetching ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {Array.from({ length: 12 }).map((_, index) => (
-            <CharityCardSkeleton key={index} />
-          ))}
-        </div>
-      ) : data?.allCharities?.nodes?.length ? (
+      {data?.allCharities?.nodes?.length ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {data.allCharities.nodes.map((charity: any) => (
             <CharityCard key={charity.id} charity={charity} />

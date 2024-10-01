@@ -14,6 +14,8 @@ import preset from './graphile.config'
 
 export const pgl = postgraphile.postgraphile(preset)
 
+export const schema = pgl.getSchema()
+
 /**
  * TODO: make it generic when crossws implements the WS API (Peer.close, Peer.protocol)
  * instead of accessing the socket directly through context (server agnostic)
