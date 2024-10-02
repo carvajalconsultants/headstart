@@ -1,66 +1,29 @@
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/start'
 import { useState } from 'react'
-import { gql } from 'urql'
+import { gql, useMutation } from 'urql'
 import { client } from '../graphql/clientProvider'
 
-const addCharity = createServerFn('POST', async (charity: string) => {
-  const result = await client.mutation(
-    gql`
-      mutation AddCharity($input: CreateCharityInput!) {
-        createCharity(input: $input) {
-          charity {
-            id
-            name
-          }
-        }
+const ADD_CHARITY_MUTATION = gql`
+  mutation AddCharity($input: CreateCharityInput!) {
+    createCharity(input: $input) {
+      charity {
+        id
+        name
       }
-    `,
-    {
-      input: {
-        charity: {
-          name: charity,
-        },
-      },
     }
-  )
-
-  if (result.error) {
-    console.log('result.error :', result.error)
-    console.error('Error adding charity:', result.error)
-    return { success: false, message: 'Failed to add charity' }
   }
+`
 
-  const newCharity = result.data.createCharity.charity
-  console.log(`Added charity: ${newCharity.name} with ID: ${newCharity.id}`)
-  return { success: true, message: `Added charity: ${newCharity.name}`, charity: newCharity }
-})
-
-const deleteCharity = createServerFn('POST', async (id: string) => {
-  const result = await client.mutation(
-    gql`
-      mutation DeleteCharity($input: DeleteCharityInput!) {
-        deleteCharity(input: $input) {
-          charity {
-            id
-          }
-        }
+const DELETE_CHARITY_MUTATION = gql`
+  mutation DeleteCharity($input: DeleteCharityInput!) {
+    deleteCharity(input: $input) {
+      charity {
+        id
       }
-    `,
-    {
-      input: {
-        id,
-      },
     }
-  )
-
-  if (result.error) {
-    console.error('Error deleting charity:', result.error)
-    return { success: false, message: 'Failed to delete charity' }
   }
-
-  return { success: true, message: 'Charity deleted successfully' }
-})
+`
 
 const getCharities = createServerFn('GET', async () => {
   const result = await client.query(
@@ -90,24 +53,41 @@ function AddCharity() {
   const charities = Route.useLoaderData()
   const [newCharityName, setNewCharityName] = useState('')
 
+  const [, addCharityMutation] = useMutation(ADD_CHARITY_MUTATION)
+  const [, deleteCharityMutation] = useMutation(DELETE_CHARITY_MUTATION)
+
   const handleAddCharity = async () => {
     const charity = newCharityName.trim()
 
     if (charity) {
-      const result = await addCharity(charity)
+      const result = await addCharityMutation({
+        input: {
+          charity: {
+            name: charity,
+          },
+        },
+      })
 
-      if (result.success) {
+      if (result.data) {
         setNewCharityName('')
         router.invalidate()
+      } else if (result.error) {
+        console.error('Error adding charity:', result.error)
       }
     }
   }
 
   const handleDeleteCharity = async (id: string) => {
-    const result = await deleteCharity(id)
+    const result = await deleteCharityMutation({
+      input: {
+        id,
+      },
+    })
 
-    if (result.success) {
+    if (result.data) {
       router.invalidate()
+    } else if (result.error) {
+      console.error('Error deleting charity:', result.error)
     }
   }
 
