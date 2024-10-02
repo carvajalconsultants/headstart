@@ -26,6 +26,7 @@ function makeWsHandler(instance: H3Grafserv): Partial<Hooks> {
   const graphqlWsServer = makeServer(makeGraphQLWSConfig(instance))
   const open = (peer: Peer<{ node: { ws: WebSocket; req: IncomingMessage } }>) => {
     const { ws: socket, req: request } = peer.ctx.node
+console.log("SUB OPEN");
 
     // a new socket opened, let graphql-ws take over
     const closed = graphqlWsServer.opened(
@@ -33,12 +34,17 @@ function makeWsHandler(instance: H3Grafserv): Partial<Hooks> {
         protocol: socket.protocol, // will be validated
         send: data =>
           new Promise((resolve, reject) => {
+console.log("SUB SEND");
             socket.send(data, (err: any) => (err ? reject(err) : resolve()))
           }),
-        close: (code, reason) => socket.close(code, reason),
+        close: (code, reason) => {
+console.log("SUB CLOSE");
+          socket.close(code, reason);
+        },
         onMessage: cb =>
-          socket.addEventListener('message', async event => {
-            console.log(event.data.toString())
+            socket.addEventListener('message', async event => {
+console.log("SUB MESSAGE");
+              console.log(event.data.toString())
             try {
               await cb(event.data.toString())
             } catch (err: any) {
