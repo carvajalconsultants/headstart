@@ -13,6 +13,7 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as UrqlImport } from './routes/urql'
 import { Route as MultipleQueriesImport } from './routes/multiple-queries'
+import { Route as DialogImport } from './routes/dialog'
 import { Route as AddCharityImport } from './routes/add-charity'
 import { Route as IndexImport } from './routes/index'
 
@@ -25,6 +26,11 @@ const UrqlRoute = UrqlImport.update({
 
 const MultipleQueriesRoute = MultipleQueriesImport.update({
   path: '/multiple-queries',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const DialogRoute = DialogImport.update({
+  path: '/dialog',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -56,6 +62,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AddCharityImport
       parentRoute: typeof rootRoute
     }
+    '/dialog': {
+      id: '/dialog'
+      path: '/dialog'
+      fullPath: '/dialog'
+      preLoaderRoute: typeof DialogImport
+      parentRoute: typeof rootRoute
+    }
     '/multiple-queries': {
       id: '/multiple-queries'
       path: '/multiple-queries'
@@ -78,6 +91,7 @@ declare module '@tanstack/react-router' {
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/add-charity': typeof AddCharityRoute
+  '/dialog': typeof DialogRoute
   '/multiple-queries': typeof MultipleQueriesRoute
   '/urql': typeof UrqlRoute
 }
@@ -85,6 +99,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/add-charity': typeof AddCharityRoute
+  '/dialog': typeof DialogRoute
   '/multiple-queries': typeof MultipleQueriesRoute
   '/urql': typeof UrqlRoute
 }
@@ -93,22 +108,30 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/add-charity': typeof AddCharityRoute
+  '/dialog': typeof DialogRoute
   '/multiple-queries': typeof MultipleQueriesRoute
   '/urql': typeof UrqlRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/add-charity' | '/multiple-queries' | '/urql'
+  fullPaths: '/' | '/add-charity' | '/dialog' | '/multiple-queries' | '/urql'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/add-charity' | '/multiple-queries' | '/urql'
-  id: '__root__' | '/' | '/add-charity' | '/multiple-queries' | '/urql'
+  to: '/' | '/add-charity' | '/dialog' | '/multiple-queries' | '/urql'
+  id:
+    | '__root__'
+    | '/'
+    | '/add-charity'
+    | '/dialog'
+    | '/multiple-queries'
+    | '/urql'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AddCharityRoute: typeof AddCharityRoute
+  DialogRoute: typeof DialogRoute
   MultipleQueriesRoute: typeof MultipleQueriesRoute
   UrqlRoute: typeof UrqlRoute
 }
@@ -116,6 +139,7 @@ export interface RootRouteChildren {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AddCharityRoute: AddCharityRoute,
+  DialogRoute: DialogRoute,
   MultipleQueriesRoute: MultipleQueriesRoute,
   UrqlRoute: UrqlRoute,
 }
@@ -134,6 +158,7 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/add-charity",
+        "/dialog",
         "/multiple-queries",
         "/urql"
       ]
@@ -143,6 +168,9 @@ export const routeTree = rootRoute
     },
     "/add-charity": {
       "filePath": "add-charity.tsx"
+    },
+    "/dialog": {
+      "filePath": "dialog.tsx"
     },
     "/multiple-queries": {
       "filePath": "multiple-queries.tsx"
