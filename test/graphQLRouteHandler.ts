@@ -8,7 +8,7 @@ import type { IncomingMessage } from 'node:http'
 import * as postgraphile from 'postgraphile'
 import { makeGraphQLWSConfig } from 'postgraphile/grafserv'
 import { grafserv } from 'postgraphile/grafserv/h3/v1'
-import { eventHandler, getHeader } from 'vinxi/http'
+import { defineWebSocket, eventHandler, getHeader } from 'vinxi/http'
 import type { WebSocket } from 'ws'
 import preset from './graphile.config'
 
@@ -23,6 +23,7 @@ export const schema = pgl.getSchema()
  * https://github.com/unjs/crossws/issues/16
  */
 function makeWsHandler(instance: H3Grafserv): Partial<Hooks> {
+  console.log("WS handler called!!");
   const graphqlWsServer = makeServer(makeGraphQLWSConfig(instance))
   const open = (peer: Peer<{ node: { ws: WebSocket; req: IncomingMessage } }>) => {
     const { ws: socket, req: request } = peer.ctx.node
@@ -76,11 +77,30 @@ export const createGraphQLRouteHandler = (preset: GraphileConfig.Preset) => {
 console.log("PROCESS GRAPHQL HTTP REQUEST");
 
       if (acceptHeader === 'text/event-stream') {
+console.log("HANDLE STREAM????");
         return serv.handleEventStreamEvent(event)
       } else {
         return serv.handleGraphQLEvent(event)
       }
     },
-    websocket: makeWsHandler(serv),
+
+    // websocket: makeWsHandler(serv),
+    websocket: defineWebSocket({
+      upgrade(req) {
+        console.log("UPGRADE CALLED");
+      },
+      open(peer) {
+        console.log("OPEN CALLED");
+      },
+      close(peer, details) {
+        console.log("CLOSE CALLED");
+      },
+      error(peer, error) {
+        console.log("ERROR CALLED");
+      },
+      message(peer, message) {
+        console.log("MESSAGE CALLED");
+      },
+    })
   })
 }
