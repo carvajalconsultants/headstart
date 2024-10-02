@@ -3,12 +3,12 @@ import { Client, cacheExchange, ssrExchange, fetchExchange, subscriptionExchange
 import { Provider } from 'urql'
 import { FC, ReactElement } from 'react'
 import { createClient as createWSClient } from 'graphql-ws'
-import WebSocket from 'ws'
+// import WebSocket from 'ws'
 
-const wsClient = createWSClient({
-  url: 'ws://localhost:3000/api',
-  webSocketImpl: WebSocket,
-})
+// const wsClient = createWSClient({
+//   url: 'ws://localhost:3000/api',
+//   webSocketImpl: WebSocket,
+// })
 
 export const client = new Client({
   url: 'http://localhost:3000/api',
@@ -17,17 +17,17 @@ export const client = new Client({
   exchanges: [
     cacheExchange,
     fetchExchange,
-    subscriptionExchange({
-      forwardSubscription(request) {
-        const input = { ...request, query: request.query || '' }
-        return {
-          subscribe(sink) {
-            const unsubscribe = wsClient.subscribe(input, sink)
-            return { unsubscribe }
-          },
-        }
-      },
-    }),
+    // subscriptionExchange({
+    //   forwardSubscription(request) {
+    //     const input = { ...request, query: request.query || '' }
+    //     return {
+    //       subscribe(sink) {
+    //         const unsubscribe = wsClient.subscribe(input, sink)
+    //         return { unsubscribe }
+    //       },
+    //     }
+    //   },
+    // }),
   ],
 })
 
