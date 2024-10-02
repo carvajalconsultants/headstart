@@ -1,7 +1,6 @@
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 import { useState } from 'react'
 import { Client, gql } from 'urql'
-// import client from '../urql'
 
 const CHARITIES_PER_PAGE = 3
 
