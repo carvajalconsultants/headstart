@@ -2,7 +2,7 @@
 import { createRootRoute, Outlet, ScrollRestoration } from '@tanstack/react-router'
 import { Body, Head, Html, Meta, Scripts } from '@tanstack/start'
 import * as React from 'react'
-import { ssr } from '../urql'
+// import { ssr } from '../urql'
 
 export const Route = createRootRoute({
   meta: () => [
@@ -29,7 +29,8 @@ function RootComponent() {
 }
 
 function RootDocument({ children }: { children: React.ReactNode }) {
-  const data = JSON.stringify(ssr.extractData())
+  // const data = JSON.stringify(ssr.extractData())
+  // <script dangerouslySetInnerHTML={{ __html: `window.__URQL_DATA__ = ${data};` }} />
 
   return (
     <Html>
@@ -40,7 +41,6 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         {children}
         <ScrollRestoration />
         <Scripts />
-        <script dangerouslySetInnerHTML={{ __html: `window.__URQL_DATA__ = ${data};` }} />
       </Body>
     </Html>
   )

@@ -1,7 +1,7 @@
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 import { useState } from 'react'
-import { gql } from 'urql'
-import client from '../urql'
+import { Client, gql } from 'urql'
+// import client from '../urql'
 
 const CHARITIES_PER_PAGE = 3
 
@@ -17,10 +17,10 @@ export const Route = createFileRoute('/urql')({
       page: number
     },
   loaderDeps: ({ search: { page } }) => ({ page }),
-  loader: async ({ deps: { page } }) => {
+  loader: async ({ context, deps: { page } }) => {
     const currentPage = Number(page) || 1
 
-    const result = await client.query(
+    const result = await context.client.query(
       gql`
         query allCharities($first: Int!, $offset: Int!) {
           allCharities(first: $first, offset: $offset) {

@@ -1,7 +1,8 @@
 // app/router.tsx
 import { createRouter as createTanStackRouter, Link } from '@tanstack/react-router'
 import { routeTree } from './routeTree.gen'
-import { GraphProvider } from './graphql/serverProvider'
+import { client, GraphProvider } from './graphql/serverProvider'
+import { Client } from "urql";
 
 export function createRouter() {
   const router = createTanStackRouter({
@@ -13,6 +14,9 @@ export function createRouter() {
           <Link to="/">Go home</Link>
         </div>
       )
+    },
+    context: {
+      client
     },
     Wrap: ({ children }) => {
       return <GraphProvider>{children}</GraphProvider>
