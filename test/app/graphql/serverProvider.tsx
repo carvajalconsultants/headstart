@@ -3,7 +3,6 @@ import { Client, Provider, ssrExchange } from 'urql'
 // import client from '../urql'
 import { grafastExchange } from '../grafastExchange'
 
-
 export const isServerSide = typeof window === 'undefined'
 export const ssr = ssrExchange({
   isClient: !isServerSide,
