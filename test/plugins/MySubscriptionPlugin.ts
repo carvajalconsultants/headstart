@@ -21,9 +21,11 @@ export const MySubscriptionPlugin = makeExtendSchemaPlugin(build =>  {
         Subscription: {
           charities: {
             subscribePlan(_$root, args) {
+console.log("subscribePLan", args);
               const $pgSubscriber = context().get('pgSubscriber')
-              const $charityId = args.get('charityId') || 55
-              const $topic = lambda($charityId, id => `charity:${id}`)
+              // const $charityId = args.get('charityId') || 55
+              // const $topic = lambda($charityId, id => `charity:${id}`)
+              const $topic = "charity"
 console.log("LISTEN TIME", $topic);
               return listen($pgSubscriber, $topic, jsonParse)
             },
@@ -35,11 +37,12 @@ console.log("LISTEN TIME", $topic);
 
         CharitySubscriptionPayload: {
           event($event) {
+console.log("event");
             return $event.get('event')
           },
           charity($event) {
             const $id = $event.get('id')
-console.log("get here??", $id);
+console.log("get here??");
             return charities.get({ id: $id })
           },
         },

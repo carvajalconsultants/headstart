@@ -23,11 +23,9 @@ export const schema = pgl.getSchema()
  * https://github.com/unjs/crossws/issues/16
  */
 function makeWsHandler(instance: H3Grafserv): Partial<Hooks> {
-  console.log("WS handler called!!");
   const graphqlWsServer = makeServer(makeGraphQLWSConfig(instance))
   const open = (peer: Peer<{ node: { ws: WebSocket; req: IncomingMessage } }>) => {
     const { ws: socket, req: request } = peer.ctx.node
-console.log("SUB OPEN");
 
     // a new socket opened, let graphql-ws take over
     const closed = graphqlWsServer.opened(
@@ -35,16 +33,13 @@ console.log("SUB OPEN");
         protocol: socket.protocol, // will be validated
         send: data =>
           new Promise((resolve, reject) => {
-console.log("SUB SEND");
             socket.send(data, (err: any) => (err ? reject(err) : resolve()))
           }),
         close: (code, reason) => {
-console.log("SUB CLOSE");
           socket.close(code, reason);
         },
         onMessage: cb =>
             socket.addEventListener('message', async event => {
-console.log("SUB MESSAGE");
               console.log(event.data.toString())
             try {
               await cb(event.data.toString())
@@ -74,33 +69,14 @@ export const createGraphQLRouteHandler = (preset: GraphileConfig.Preset) => {
   return eventHandler({
     handler: async event => {
       const acceptHeader = getHeader(event, 'accept')
-console.log("PROCESS GRAPHQL HTTP REQUEST");
 
       if (acceptHeader === 'text/event-stream') {
-console.log("HANDLE STREAM????");
         return serv.handleEventStreamEvent(event)
       } else {
         return serv.handleGraphQLEvent(event)
       }
     },
 
-    // websocket: makeWsHandler(serv),
-    websocket: defineWebSocket({
-      upgrade(req) {
-        console.log("UPGRADE CALLED");
-      },
-      open(peer) {
-        console.log("OPEN CALLED");
-      },
-      close(peer, details) {
-        console.log("CLOSE CALLED");
-      },
-      error(peer, error) {
-        console.log("ERROR CALLED");
-      },
-      message(peer, message) {
-        console.log("MESSAGE CALLED");
-      },
-    })
+    websocket: makeWsHandler(serv),
   })
 }
