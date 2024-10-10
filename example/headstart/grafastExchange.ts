@@ -47,8 +47,6 @@ async function runGrafastQuery(pgl: PostGraphileInstance, operation: Operation):
 
     const { data, errors, extensions } = result
 
-    console.log('GRAFAST EXCHANGE RESULT :', result)
-
     if (errors && errors.length > 0) {
       return {
         operation,

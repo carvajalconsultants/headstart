@@ -6,8 +6,7 @@
     "@tanstack/start": "^1.63.3",
     "postgraphile": "^5.0.0-beta.32",
     "urql": "^4.1.0",
-    "vinxi": "^0.4.3",
-    "ws": "^8.18.0"
+    "vinxi": "^0.4.3"
   },
   "devDependencies": {
     "@types/ws": "^8.5.12",

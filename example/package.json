@@ -15,8 +15,10 @@
     "typescript": "^5.6.2"
   },
   "dependencies": {
-    "@tanstack/react-router": "^1.63.2",
-    "@tanstack/start": "^1.63.3",
+    "@tanstack/react-router": "^1.64.0",
+    "@tanstack/router-zod-adapter": "^1.64.0",
+    "@tanstack/start": "^1.64.0",
+    "@urql/exchange-graphcache": "^7.2.0",
     "@vitejs/plugin-react": "^4.3.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
