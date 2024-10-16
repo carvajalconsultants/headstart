@@ -1,9 +1,10 @@
+import { StartClient } from "@tanstack/start";
 // app/client.tsx
 /// <reference types="vinxi/types/client" />
-import { hydrateRoot } from 'react-dom/client'
-import { StartClient } from '@tanstack/start'
-import { createRouter } from './clientRouter'
+import { hydrateRoot } from "react-dom/client";
+import { createRouter } from "./clientRouter";
 
-const router = createRouter()
+const router = createRouter();
 
-hydrateRoot(document.getElementById('root')!, <StartClient router={router} />)
+// biome-ignore lint: Safe enough to assume root element will be there
+hydrateRoot(document.getElementById("root")!, <StartClient router={router} />);

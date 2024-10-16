@@ -1,14 +1,14 @@
+import { getRouterManifest } from "@tanstack/start/router-manifest";
 // app/ssr.tsx
 /// <reference types="vinxi/types/server" />
 import {
-  createStartHandler,
-  defaultStreamHandler,
-} from '@tanstack/start/server'
-import { getRouterManifest } from '@tanstack/start/router-manifest'
+	createStartHandler,
+	defaultStreamHandler,
+} from "@tanstack/start/server";
 
-import { createRouter } from './serverRouter'
+import { createRouter } from "./serverRouter";
 
 export default createStartHandler({
-  createRouter,
-  getRouterManifest,
-})(defaultStreamHandler)
+	createRouter,
+	getRouterManifest,
+})(defaultStreamHandler);

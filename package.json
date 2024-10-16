@@ -3,6 +3,7 @@
   "private": true,
   "type": "module",
   "dependencies": {
+    "@biomejs/biome": "^1.9.3",
     "@tanstack/start": "^1.63.3",
     "postgraphile": "^5.0.0-beta.32",
     "urql": "^4.1.0",
