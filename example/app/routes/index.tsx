@@ -21,8 +21,8 @@ const allCharitiesSubscription = gql`
 `
 
 const handleSubscription = (prevCharities = [], response) => {
-  console.log("handle subscription!!!!!!!");
-  return response.allCharities.nodes
+  console.log("handle subscription!!!!!!!", response);
+  return response.charities.charity
 }
 
 //TODO Change to valibot
@@ -78,6 +78,9 @@ function Home() {
     first: CHARITIES_PER_PAGE, offset: (page - 1) * CHARITIES_PER_PAGE
   }
   });
+
+  //TODO unsubscribe when component is unmounted
+  useSubscription({ query: allCharitiesSubscription, }, handleSubscription);
 
   const navigate = Route.useNavigate();
   const router = useRouter()
