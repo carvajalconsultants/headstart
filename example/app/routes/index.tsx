@@ -36,22 +36,20 @@ export const Route = createFileRoute('/')({
   validateSearch: zodSearchValidator(paramSchema),
 
   loaderDeps: ({ search: { page } }) => ({ page }),
-  loader: ({ context, deps: { page } }) => {
-    console.log("LOADER called!!!");
-    return context.client.query(
-      gql`
-        query allCharities($first: Int!, $offset: Int!) {
-          allCharities(first: $first, offset: $offset) {
-            nodes {
-              id
-              name
-            }
-            totalCount
+  loader: ({ context, deps: { page } }) => context.client.query(
+    gql`
+      query allCharities($first: Int!, $offset: Int!) {
+        allCharities(first: $first, offset: $offset) {
+          nodes {
+            id
+            name
           }
+          totalCount
         }
-      `,
-      { first: CHARITIES_PER_PAGE, offset: (page - 1) * CHARITIES_PER_PAGE }
-    )},
+      }
+    `,
+    { first: CHARITIES_PER_PAGE, offset: (page - 1) * CHARITIES_PER_PAGE }
+  ),
   pendingComponent: () => <div className="text-2xl font-bold text-center mt-8">Loading...</div>,
   errorComponent: ErrorComponent,
 })

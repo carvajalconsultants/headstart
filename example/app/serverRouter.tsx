@@ -2,6 +2,7 @@
 import { createRouter as createTanStackRouter } from '@tanstack/react-router'
 import { routeTree } from './routeTree.gen'
 import { client, GraphProvider } from './graphql/serverProvider'
+import { ssr } from './graphql/ssrExchange'
 
 export function createRouter() {
   const router = createTanStackRouter({
@@ -9,17 +10,10 @@ export function createRouter() {
     context: {
       client,
     },
-    Wrap: ({ children }) => {
-console.log("WRAP CALLED!!!!!!");
-      return <GraphProvider>{children}</GraphProvider>;
-    },
+    // Send data to client so URQL can be hydrated.
+    dehydrate: () => ({ initialData: ssr.extractData() }),
+    Wrap: ({ children }) => <GraphProvider>{children}</GraphProvider>,
   })
 
   return router
-}
-
-declare module '@tanstack/react-router' {
-  interface Register {
-    router: ReturnType<typeof createRouter>
-  }
 }

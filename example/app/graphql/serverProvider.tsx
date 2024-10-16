@@ -4,21 +4,12 @@ import { Client, Provider, ssrExchange, fetchExchange } from 'urql'
 import { grafastExchange } from '../../headstart/grafastExchange';
 import { pgl } from "../../pgl";
 
-export const isServerSide = typeof window === 'undefined'
-export const ssr = ssrExchange({
-  isClient: !isServerSide,
-  initialState: !isServerSide ? (window as any).__URQL_DATA__ : undefined,
-})
-
-if (!isServerSide) {
-  ssr.restoreData((window as any).__URQL_DATA__)
-}
+import { ssr } from "./ssrExchange";
 
 export const client = new Client({
   url: 'http://localhost:3000/api',
   requestPolicy: 'network-only',
-  // exchanges: [grafastExchange(pgl), ssr],
-  exchanges: [ssr, fetchExchange],
+  exchanges: [ssr, grafastExchange(pgl)],
   // exchanges: [cacheExchange, ssr, grafastExchange, fetchExchange],
   // suspense: true,
 })

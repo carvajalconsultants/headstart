@@ -3,7 +3,7 @@ import { createRouter as createTanStackRouter, Link } from '@tanstack/react-rout
 import { client, GraphProvider } from './graphql/serverProvider'
 import { routeTree } from './routeTree.gen'
 
-export function createRouter() {
+export function createRouter() {  
   const router = createTanStackRouter({
     routeTree,
     defaultNotFoundComponent: () => {
@@ -16,6 +16,14 @@ export function createRouter() {
     },
     context: {
       client,
+    },
+    dehydrate: () => {
+      console.log("dehydrate called????");
+      return { initialData: {hello: "test"} };
+    },
+    hydrate: (dehydrated) => {
+      // hydrate(queryClient, dehydrated.queryClientState)
+      console.log("hydrate called dehydrated", dehydrated);
     },
     Wrap: ({ children }) => {
       return <GraphProvider>{children}</GraphProvider>

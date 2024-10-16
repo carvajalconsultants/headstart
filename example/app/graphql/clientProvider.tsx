@@ -5,18 +5,19 @@ import { createClient as createWSClient } from 'graphql-ws'
 import { FC, ReactElement } from 'react'
 import { Provider } from 'urql'
 
+import { ssr } from "./ssrExchange";
+
 const wsClient = createWSClient({
   url: 'ws://localhost:3000/api',
 })
 
 export const client = new Client({
   url: 'http://localhost:3000/api',
-  requestPolicy: 'cache-and-network',
+  // requestPolicy: 'cache-and-network',
   // fetchSubscriptions: true,
   exchanges: [
-    cacheExchange({
-
-    }),
+    cacheExchange(),
+    ssr,
     fetchExchange,
     subscriptionExchange({
       forwardSubscription(request) {
@@ -31,8 +32,6 @@ export const client = new Client({
     }),
   ],
 })
-
-export default client
 
 export const GraphProvider: FC<{ children: ReactElement }> = ({ children }) => <Provider value={client}>{children}</Provider>
 
