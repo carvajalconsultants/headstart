@@ -1,11 +1,10 @@
 import { cacheExchange } from "@urql/exchange-graphcache";
-import { Client, fetchExchange, ssrExchange, subscriptionExchange } from "urql";
-
 import { createClient as createWSClient } from "graphql-ws";
-import type { FC, ReactElement } from "react";
+import { Client, fetchExchange, ssrExchange, subscriptionExchange } from "urql";
 import { Provider } from "urql";
-
 import { ssr } from "./ssrExchange";
+
+import type { FC, ReactElement } from "react";
 
 const wsClient = createWSClient({
 	url: "ws://localhost:3000/api",
@@ -13,8 +12,6 @@ const wsClient = createWSClient({
 
 export const client = new Client({
 	url: "http://localhost:3000/api",
-	// requestPolicy: 'cache-and-network',
-	// fetchSubscriptions: true,
 	exchanges: [
 		cacheExchange(),
 		ssr,

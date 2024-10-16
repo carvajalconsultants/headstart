@@ -1,13 +1,21 @@
-import type { IncomingMessage } from "node:http";
-import type { Hooks, Peer } from "crossws";
-import type { H3Grafserv } from "grafserv/h3/v1";
 import { CloseCode, makeServer } from "graphql-ws";
 import { makeGraphQLWSConfig } from "postgraphile/grafserv";
 import { grafserv } from "postgraphile/grafserv/h3/v1";
-import { defineWebSocket, eventHandler, getHeader } from "vinxi/http";
+import { eventHandler, getHeader } from "vinxi/http";
+
+import type { IncomingMessage } from "node:http";
+import type { Hooks, Peer } from "crossws";
+import type { H3Grafserv } from "grafserv/h3/v1";
+import type { PostGraphileInstance } from "postgraphile";
 import type { WebSocket } from "ws";
 
-import type { PostGraphileInstance } from "postgraphile";
+/**
+ * This is an H3 handler that does all of the GraphQL request processing in TSR (including Subscriptions).
+ *
+ * Code is basically from: https://discord.com/channels/489127045289476126/498852330754801666/1260251871877271704
+ *
+ * We do however want to be able to use other API routes in TSR, so this will need to be rewritten so we can have a /api/graphql endpoint.
+ */
 
 /**
  * TODO: make it generic when crossws implements the WS API (Peer.close, Peer.protocol)

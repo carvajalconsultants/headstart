@@ -10,8 +10,10 @@ export function createRouter() {
 		context: {
 			client,
 		},
+
 		// Send data to client so URQL can be hydrated.
 		dehydrate: () => ({ initialData: ssr.extractData() }),
+
 		Wrap: ({ children }) => <GraphProvider>{children}</GraphProvider>,
 	});
 

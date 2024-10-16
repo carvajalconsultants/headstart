@@ -23,25 +23,32 @@ export const grafastExchange = (pgl: PostGraphileInstance): Exchange => {
 	};
 };
 
-async function runGrafastQuery(
+/**
+ * Run the URQL query with Grafast, without making an HTTP request to ourselves (which is unnecessary overhead).
+ *
+ * @param pgl Postgraphile instance that we will run the URQL query with.
+ * @param operation URQL operation, typically a query that will be run with Grafast.
+ * @returns Query data, which is used to pass along in the Exchange chain.
+ */
+const runGrafastQuery = async (
 	pgl: PostGraphileInstance,
 	operation: Operation,
-): Promise<OperationResult> {
+): Promise<OperationResult> => {
 	try {
 		const { variables: variableValues, query: document } = operation;
 
-		const schema = await pgl.getSchema();
-
 		const args = {
 			resolvedPreset: pgl.getResolvedPreset(),
-			schema,
+			schema: await pgl.getSchema(),
 			document,
 			variableValues: variableValues as Maybe<{
 				readonly [variable: string]: unknown;
 			}>,
 		};
+		// Add the Graphile context to our args so Grafast can run
 		await hookArgs(args);
 
+		// Run the query with Grafast, to get the result from PostgreSQL
 		const result = await execute(args);
 
 		if (!result || typeof result !== "object" || !("data" in result)) {
@@ -83,4 +90,4 @@ async function runGrafastQuery(
 			hasNext: false,
 		};
 	}
-}
+};
