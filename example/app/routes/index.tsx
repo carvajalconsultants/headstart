@@ -55,7 +55,7 @@ export const Route = createFileRoute("/")({
 	errorComponent: ErrorComponent,
 });
 
-const Home = () => {
+function Home() {
 	const { page } = Route.useSearch();
 
 	const [{ data, error }] = useQuery({
@@ -108,7 +108,7 @@ const Home = () => {
 			{error && <p className="text-red-500 mt-4">Oh no... {error.message}</p>}
 		</div>
 	);
-};
+}
 
 // Component for rendering individual charity cards
 function CharityCard({ charity }: { charity: Charity }) {
