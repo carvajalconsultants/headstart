@@ -86,6 +86,25 @@ function Home() {
 	//TODO unsubscribe when component is unmounted
 	useSubscription({ query: allCharitiesSubscription });
 
+	useQuery({
+		requestPolicy: "cache-first",
+		query: gql`
+    query allCharities($first: Int!, $offset: Int!) {
+      allCharities(first: $first, offset: $offset) {
+        nodes {
+          id
+          name
+        }
+        totalCount
+      }
+    }
+  `,
+		variables: {
+			first: CHARITIES_PER_PAGE,
+			offset: (page - 1) * CHARITIES_PER_PAGE,
+		},
+	});
+
 	const navigate = Route.useNavigate();
 	const router = useRouter();
 

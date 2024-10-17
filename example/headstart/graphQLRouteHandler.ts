@@ -43,7 +43,6 @@ function makeWsHandler(instance: H3Grafserv): Partial<Hooks> {
 				},
 				onMessage: (cb) =>
 					socket.addEventListener("message", async (event) => {
-						console.log(event.data.toString());
 						try {
 							await cb(event.data.toString());
 						} catch (err) {
@@ -65,7 +64,13 @@ function makeWsHandler(instance: H3Grafserv): Partial<Hooks> {
 	return { open };
 }
 
+/**
+ * Actualy H3 endpoint handler that processes all GraphQL requests.
+ * 
+ * @param pgl Postgraphile instance that has the connection to the database.
+ */
 export const createGraphQLRouteHandler = (pgl: PostGraphileInstance) => {
+   // Initialize Grafserv which is the one that actually processes the GraphQL requests.
 	const serv = pgl.createServ(grafserv);
 
 	return eventHandler({
@@ -77,9 +82,11 @@ export const createGraphQLRouteHandler = (pgl: PostGraphileInstance) => {
 				return serv.handleEventStreamEvent(event);
 			}
 
+      // Process query and mutation GraphQL requests here
 			return serv.handleGraphQLEvent(event);
 		},
 
+    // Initialize the handler that manages WebSocket subscriptions
 		websocket: makeWsHandler(serv),
 	});
 };
