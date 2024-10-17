@@ -21,6 +21,6 @@
 	},
 	"files": {
 		"include": ["src/**"],
-		"ignore": ["styled-system/**"]
+		"ignore": ["styled-system/**", "README.md"]
 	}
 }
