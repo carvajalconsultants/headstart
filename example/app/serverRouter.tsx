@@ -14,6 +14,7 @@ export function createRouter() {
 		// Send data to client so URQL can be hydrated.
 		dehydrate: () => ({ initialData: ssr.extractData() }),
 
+        // Wrap our entire route with the URQL provider so we can execute queries and mutations.
 		Wrap: ({ children }) => <Provider value={client}>{children}</Provider>,
 	});
 
