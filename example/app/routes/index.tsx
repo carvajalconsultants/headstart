@@ -1,8 +1,7 @@
 // app/routes/index.tsx
-import { createFileRoute, useRouter } from "@tanstack/react-router";
+import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { zodSearchValidator } from "@tanstack/router-zod-adapter";
-import { useContext, useEffect } from "react";
-import { Client, gql, useClient, useQuery, useSubscription } from "urql";
+import { gql, useQuery, useSubscription } from "urql";
 import { z } from "zod";
 
 const CHARITIES_PER_PAGE = 3;
@@ -20,7 +19,6 @@ const allCharitiesSubscription = gql`
   }
 `;
 
-//TODO Change to valibot
 const paramSchema = z.object({
 	page: z.number().int().nonnegative().default(1).catch(1),
 });
@@ -57,15 +55,10 @@ export const Route = createFileRoute("/")({
 	errorComponent: ErrorComponent,
 });
 
-function Home() {
-	// const [{ data, error }] = useSubscription({ query: allCharitiesSubscription, }, handleSubscription);
+const Home = () => {
 	const { page } = Route.useSearch();
-	// const { data, error } = Route.useLoaderData()
-	// const { client } = Route.useRouteContext();
 
-	//TODO This produces the SSR useContext error, where the GraphProvider does not seem to be available in our Wrap component
 	const [{ data, error }] = useQuery({
-		requestPolicy: "cache-first",
 		query: gql`
     query allCharities($first: Int!, $offset: Int!) {
       allCharities(first: $first, offset: $offset) {
@@ -83,43 +76,12 @@ function Home() {
 		},
 	});
 
-	//TODO unsubscribe when component is unmounted
+	// Subscribe to any data changes on the server
 	useSubscription({ query: allCharitiesSubscription });
-
-	useQuery({
-		requestPolicy: "cache-first",
-		query: gql`
-    query allCharities($first: Int!, $offset: Int!) {
-      allCharities(first: $first, offset: $offset) {
-        nodes {
-          id
-          name
-        }
-        totalCount
-      }
-    }
-  `,
-		variables: {
-			first: CHARITIES_PER_PAGE,
-			offset: (page - 1) * CHARITIES_PER_PAGE,
-		},
-	});
-
-	const navigate = Route.useNavigate();
-	const router = useRouter();
-
-	// console.log("subscription result", result);
-	// client.subscription(allCharitiesSubscription).subscribe((data) => {
-	//   console.log("got data?", data);
-	// });
 
 	const totalPages = Math.ceil(
 		(data?.allCharities?.totalCount || 0) / CHARITIES_PER_PAGE,
 	);
-
-	const handlePageChange = (newPage: number) => {
-		navigate({ search: { page: newPage } });
-	};
 
 	return (
 		<div className="p-2">
@@ -133,26 +95,11 @@ function Home() {
 					</div>
 					<div className="mt-8 flex justify-center">
 						{/* TODO Change this to Link which should be typed */}
-						<button
-							type="button"
-							onClick={() => handlePageChange(page - 1)}
-							disabled={page === 1}
-							className="px-4 py-2 mr-2 bg-blue-500 text-white rounded disabled:bg-gray-300"
-						>
-							Previous
-						</button>
+            <Link to="/" search={{ page: page - 1 }} disabled={page === 1} className="px-4 py-2 mr-2 bg-blue-500 text-white rounded disabled:bg-gray-300">Previous</Link>
 						<span className="px-4 py-2">
 							Page {page} of {totalPages}
 						</span>
-						{/* TODO Change this to Link which should be typed */}
-						<button
-							type="button"
-							onClick={() => handlePageChange(page + 1)}
-							disabled={page === totalPages}
-							className="px-4 py-2 ml-2 bg-blue-500 text-white rounded disabled:bg-gray-300"
-						>
-							Next
-						</button>
+            <Link to="/" search={{ page: page + 1 }} disabled={page === totalPages} className="px-4 py-2 ml-2 bg-blue-500 text-white rounded disabled:bg-gray-300">Next</Link>
 					</div>
 				</>
 			) : (
@@ -161,7 +108,7 @@ function Home() {
 			{error && <p className="text-red-500 mt-4">Oh no... {error.message}</p>}
 		</div>
 	);
-}
+};
 
 // Component for rendering individual charity cards
 function CharityCard({ charity }: { charity: Charity }) {

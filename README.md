@@ -149,3 +149,54 @@ export function createRouter() {
 	return router;
 }
 ```
+
+10. Tell TSR to use our client side router:
+
+```
+// app/client.tsx
+/// <reference types="vinxi/types/client" />
+import { StartClient } from "@tanstack/start";
+import { hydrateRoot } from "react-dom/client";
+import { createRouter } from "./clientRouter";
+
+const router = createRouter();
+
+// biome-ignore lint: Safe enough to assume root element will be there
+hydrateRoot(document.getElementById("root")!, <StartClient router={router} />);
+```
+
+11. Last but not least, you're ready to start using URQL on your components and pages. First we create the route using the loader option so we can pre-load data:
+
+```
+export const Route = createFileRoute("/")({
+	...
+	validateSearch: zodSearchValidator(paramSchema),
+
+	loaderDeps: ({ search: { page } }) => ({ page }),
+	loader: ({ context, deps: { page } }) =>
+		context.client.query(
+			gql`...`
+			{ first: CHARITIES_PER_PAGE, offset: (page - 1) * CHARITIES_PER_PAGE },
+		),
+	...
+});
+```
+
+12. Now in your component, you can query with URQL as you normally would:
+
+```
+const Home = () => {
+	const { page } = Route.useSearch();
+
+	const [{ data, error }] = useQuery({
+		query: gql`...`,
+		variables: {
+			first: CHARITIES_PER_PAGE,
+			offset: (page - 1) * CHARITIES_PER_PAGE,
+		},
+	});
+
+	// Subscribe to any data changes on the server
+	useSubscription({ query: allCharitiesSubscription });
+}
+```
