@@ -1,4 +1,4 @@
-import { jsonParse } from "postgraphile/@dataplan/json";
+import { jsonParse } from "@dataplan/json";
 import { context, lambda, listen } from "postgraphile/grafast";
 import { gql, makeExtendSchemaPlugin } from "postgraphile/utils";
 
@@ -15,7 +15,8 @@ export const MySubscriptionPlugin = makeExtendSchemaPlugin((build) => {
         extend type Subscription {
           charities: CharitySubscriptionPayload
         }
-      `,
+        `,
+
 		plans: {
 			Subscription: {
 				charities: {
@@ -26,6 +27,7 @@ export const MySubscriptionPlugin = makeExtendSchemaPlugin((build) => {
 						const $topic = "charity";
 						return listen($pgSubscriber, $topic, jsonParse);
 					},
+
 					plan($event) {
 						return $event;
 					},
@@ -36,6 +38,7 @@ export const MySubscriptionPlugin = makeExtendSchemaPlugin((build) => {
 				event($event) {
 					return $event.get("event");
 				},
+
 				charity($event) {
 					const $id = $event.get("id");
 					return charities.get({ id: $id });

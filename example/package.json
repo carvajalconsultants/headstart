@@ -15,15 +15,17 @@
   },
   "dependencies": {
     "@biomejs/biome": "^1.9.3",
-    "@tanstack/react-router": "^1.69.1",
-    "@tanstack/router-zod-adapter": "^1.69.1",
-    "@tanstack/start": "^1.69.2",
+    "@dataplan/json": "^0.0.1-beta.20",
+    "@tanstack/react-router": "^1.74.2",
+    "@tanstack/router-zod-adapter": "^1.74.2",
+    "@tanstack/start": "^1.74.2",
     "@urql/exchange-graphcache": "^7.2.0",
     "@vitejs/plugin-react": "^4.3.2",
     "graphql-ws": "^5.16.0",
     "postgraphile": "^5.0.0-beta.32",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
+    "react": "^19.0.0-rc-65a56d0e-20241020",
+    "react-dom": "^19.0.0-rc-65a56d0e-20241020",
+    "ruru": "^2.0.0-beta.13",
     "urql": "^4.1.0",
     "vinxi": "^0.4.3"
   }
