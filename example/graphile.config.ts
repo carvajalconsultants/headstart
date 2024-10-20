@@ -1,4 +1,4 @@
-import { MySubscriptionPlugin } from "./plugins/MySubscriptionPlugin";
+import { MySubscriptionPlugin } from "./graphile/MySubscriptionPlugin";
 import "postgraphile"; // To import the TypeScript types
 import { makePgService } from "postgraphile/adaptors/pg";
 import { PostGraphileAmberPreset } from "postgraphile/presets/amber";
