@@ -61,6 +61,7 @@ function makeWsHandler(instance: H3Grafserv): Partial<Hooks> {
 			once: true,
 		});
 	};
+
 	return { open };
 }
 
@@ -82,11 +83,11 @@ export const createGraphQLRouteHandler = (pgl: PostGraphileInstance) => {
 				return serv.handleEventStreamEvent(event);
 			}
 
-      // Process query and mutation GraphQL requests here
+		// Process query and mutation GraphQL requests here
 			return serv.handleGraphQLEvent(event);
 		},
 
-    // Initialize the handler that manages WebSocket subscriptions
+		// Initialize the handler that manages WebSocket subscriptions
 		websocket: makeWsHandler(serv),
 	});
 };
