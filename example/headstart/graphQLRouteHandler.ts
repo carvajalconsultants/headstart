@@ -1,7 +1,7 @@
 import { CloseCode, makeServer } from "graphql-ws";
 import { makeGraphQLWSConfig } from "postgraphile/grafserv";
 import { grafserv } from "postgraphile/grafserv/h3/v1";
-import { eventHandler, getHeader } from "vinxi/http";
+import { defineEventHandler, getHeader } from "vinxi/http";
 
 import type { IncomingMessage } from "node:http";
 import type { Hooks, Peer } from "crossws";
@@ -74,7 +74,7 @@ export const createGraphQLRouteHandler = (pgl: PostGraphileInstance) => {
    // Initialize Grafserv which is the one that actually processes the GraphQL requests.
 	const serv = pgl.createServ(grafserv);
 
-	return eventHandler({
+	return defineEventHandler({
 		handler: async (event) => {
 			const acceptHeader = getHeader(event, "accept");
 
