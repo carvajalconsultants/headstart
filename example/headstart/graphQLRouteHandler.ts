@@ -1,7 +1,7 @@
 import { CloseCode, makeServer } from "graphql-ws";
 import { makeGraphQLWSConfig } from "postgraphile/grafserv";
 import { grafserv } from "postgraphile/grafserv/h3/v1";
-import { defineEventHandler, getHeader, getRequestURL, toWebRequest } from "vinxi/http";
+import { defineEventHandler, getHeader, toWebRequest } from "vinxi/http";
 
 import type { IncomingMessage } from "node:http";
 import type { Hooks, Peer } from "crossws";
