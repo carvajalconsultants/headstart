@@ -4,11 +4,11 @@ import { Client, fetchExchange, ssrExchange, subscriptionExchange } from "urql";
 import { ssr } from "../../headstart/ssrExchange";
 
 const wsClient = createWSClient({
-	url: "ws://localhost:3000/api",
+	url: "ws://localhost:3000/api/graphql",
 });
 
 export const client = new Client({
-	url: "http://localhost:3000/api",
+	url: "http://localhost:3000/api/graphql",
 	exchanges: [
 		cacheExchange(),
 		ssr,

@@ -7,7 +7,7 @@ export default defineConfig({
 		autoCodeSplitting: true,
 	},
 	server: {
-		preset: "bun",
+		preset: "node-server",
 		experimental: {
 			websocket: true,
 		},

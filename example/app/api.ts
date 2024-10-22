@@ -1,5 +1,6 @@
 // app/api.ts
-import { createGraphQLRouteHandler } from "../headstart";
+import { defaultAPIFileRouteHandler } from "@tanstack/start/api";
+import { createStartAPIHandler } from "../headstart";
 import { pgl } from "../pgl";
 
-export default createGraphQLRouteHandler(pgl);
+export default createStartAPIHandler(pgl, defaultAPIFileRouteHandler);

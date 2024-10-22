@@ -10,8 +10,8 @@ const preset: GraphileConfig.Preset = {
 		graphiql: true,
 		websockets: true,
 		watch: true,
-		graphqlPath: "/api",
-		eventStreamPath: "/api",
+		graphqlPath: "/api/graphql",
+		eventStreamPath: "/api/graphql",
 	},
 	pgServices: [
 		makePgService({
