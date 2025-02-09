@@ -4,18 +4,16 @@ import { grafserv } from "postgraphile/grafserv/h3/v1";
 import { defineEventHandler, getHeader, toWebRequest } from "vinxi/http";
 
 import type { IncomingMessage } from "node:http";
-import type { Hooks, Peer } from "crossws";
+import type { StartAPIHandlerCallback } from "@tanstack/start/api";
+import { type Hooks, type Peer, defineHooks } from "crossws";
 import type { H3Grafserv } from "grafserv/h3/v1";
 import type { PostGraphileInstance } from "postgraphile";
 import type { WebSocket } from "ws";
-import type { StartAPIHandlerCallback } from "@tanstack/start/api";
 
 /**
  * This is an H3 handler that does all of the GraphQL request processing in TSR (including Subscriptions).
  *
  * Code is basically from: https://discord.com/channels/489127045289476126/498852330754801666/1260251871877271704
- *
- * We do however want to be able to use other API routes in TSR, so this will need to be rewritten so we can have a /api/graphql endpoint.
  */
 
 /**
@@ -26,46 +24,47 @@ import type { StartAPIHandlerCallback } from "@tanstack/start/api";
  */
 function makeWsHandler(instance: H3Grafserv): Partial<Hooks> {
 	const graphqlWsServer = makeServer(makeGraphQLWSConfig(instance));
-	const open = (
-		peer: Peer<{ node: { ws: WebSocket; req: IncomingMessage } }>,
-	) => {
-		// TODO Getting the socket like this causes problems deploying to bun. We really need a better websocket implementation with crossws
-		const { ws: socket } = peer.ctx.node;
 
-		// a new socket opened, let graphql-ws take over
-		const closed = graphqlWsServer.opened(
-			{
-				protocol: socket.protocol, // will be validated
-				send: (data) =>
-					new Promise((resolve, reject) => {
-						socket.send(data, (err: Error) => (err ? reject(err) : resolve()));
-					}),
-				close: (code, reason) => {
-					socket.close(code, reason);
-				},
-				onMessage: (cb) =>
-					socket.addEventListener("message", async (event) => {
-						try {
-							await cb(event.data.toString());
-						} catch (err) {
+	return {
+		open(peer) {
+			// TODO Getting the socket like this causes problems deploying to bun. We really need a better websocket implementation with crossws
+			// Websocket from the H3 instance, so this is the browser client
+			const socket = peer.websocket as Required<WebSocket>;
+
+			// a new socket opened, let graphql-ws take over
+			const closed = graphqlWsServer.opened(
+				{
+					protocol: socket.protocol, // will be validated
+					send: (data) =>
+						new Promise((resolve, reject) => {
+							socket.send(data, (err: Error) =>
+								err ? reject(err) : resolve(),
+							);
+						}),
+					close: (code, reason) => {
+						socket.close(code, reason);
+					},
+					onMessage: (cb) => {
+						socket.on("message", async (event) => {
 							try {
-								socket.close(CloseCode.InternalServerError, err.message);
-							} catch {
-								// noop
+								await cb(event.toString());
+							} catch (err) {
+								try {
+									socket.close(CloseCode.InternalServerError, err.message);
+								} catch {
+									// noop
+								}
 							}
-						}
-					}),
-			},
-			// pass values to the `extra` field in the context
-			//{ peer, socket, request },
-			{},
-		);
-		socket.addEventListener("close", (e) => closed(e.code, e.reason), {
-			once: true,
-		});
+						});
+					},
+				},
+				// pass values to the `extra` field in the context
+				//{ peer, socket, request },
+				{},
+			);
+			// socket.once("close", (_socket, code: number, reason: Buffer) => closed(code, reason.toString()));
+		},
 	};
-
-	return { open };
 }
 
 // Make sure this is not instantiated more than once
@@ -73,11 +72,14 @@ let serv;
 
 /**
  * Actual H3 endpoint handler that intercepts requests to /api/graphql and processes with Postgraphile.
- * 
+ *
  * @param pgl Postgraphile instance that has the connection to the database.
  * @param cb Start API handler callback, usually defaultAPIFileRouteHandler from Start.
  */
-export const createStartAPIHandler = (pgl: PostGraphileInstance, cb: StartAPIHandlerCallback) => {
+export const createStartAPIHandler = (
+	pgl: PostGraphileInstance,
+	cb: StartAPIHandlerCallback,
+) => {
 	if (!serv) {
 		// Initialize Grafserv which is the one that actually processes the GraphQL requests.
 		serv = pgl.createServ(grafserv);

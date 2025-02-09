@@ -1,7 +1,7 @@
 import { createRouter as createTanStackRouter } from "@tanstack/react-router";
 import { Provider } from "urql";
-import { client } from "./graphql/clientProvider";
 import { ssr } from "../headstart/ssrExchange";
+import { client } from "./graphql/clientProvider";
 import { routeTree } from "./routeTree.gen";
 
 export function createRouter() {
@@ -15,7 +15,7 @@ export function createRouter() {
 			ssr.restoreData(dehydrated.initialData);
 		},
 
-        // Wrap our entire route with the URQL provider so we can execute queries and mutations.
+		// Wrap our entire route with the URQL provider so we can execute queries and mutations.
 		Wrap: ({ children }) => <Provider value={client}>{children}</Provider>,
 	});
 

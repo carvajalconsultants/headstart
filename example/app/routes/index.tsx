@@ -1,11 +1,12 @@
 // app/routes/index.tsx
-import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
+import { Link, createFileRoute, useRouter } from "@tanstack/react-router";
 import { zodSearchValidator } from "@tanstack/router-zod-adapter";
 import { gql, useQuery, useSubscription } from "urql";
 import { z } from "zod";
 
 const CHARITIES_PER_PAGE = 3;
 
+// select pg_notify('charity', json_build_object('event', 'updated', 'id', 'f5cc66ec-3b9d-441e-a049-2046ab57c8cf')::TEXT);
 const allCharitiesSubscription = gql`
   subscription AllCharities {
   charities {
@@ -95,11 +96,25 @@ function Home() {
 					</div>
 					<div className="mt-8 flex justify-center">
 						{/* TODO Change this to Link which should be typed */}
-            <Link to="/" search={{ page: page - 1 }} disabled={page === 1} className="px-4 py-2 mr-2 bg-blue-500 text-white rounded disabled:bg-gray-300">Previous</Link>
+						<Link
+							to="/"
+							search={{ page: page - 1 }}
+							disabled={page === 1}
+							className="px-4 py-2 mr-2 bg-blue-500 text-white rounded disabled:bg-gray-300"
+						>
+							Previous
+						</Link>
 						<span className="px-4 py-2">
 							Page {page} of {totalPages}
 						</span>
-            <Link to="/" search={{ page: page + 1 }} disabled={page === totalPages} className="px-4 py-2 ml-2 bg-blue-500 text-white rounded disabled:bg-gray-300">Next</Link>
+						<Link
+							to="/"
+							search={{ page: page + 1 }}
+							disabled={page === totalPages}
+							className="px-4 py-2 ml-2 bg-blue-500 text-white rounded disabled:bg-gray-300"
+						>
+							Next
+						</Link>
 					</div>
 				</>
 			) : (

@@ -9,24 +9,24 @@
   },
   "devDependencies": {
     "@types/bun": "latest",
-    "@types/react": "^18.3.11",
-    "@types/react-dom": "^18.3.0",
-    "typescript": "^5.6.2"
+    "@types/react": "^19.0.8",
+    "@types/react-dom": "^19.0.3",
+    "@vitejs/plugin-react": "^4.3.4",
+    "typescript": "^5.7.3"
   },
   "dependencies": {
-    "@biomejs/biome": "^1.9.3",
-    "@dataplan/json": "^0.0.1-beta.20",
-    "@tanstack/react-router": "^1.74.2",
-    "@tanstack/router-zod-adapter": "^1.74.2",
-    "@tanstack/start": "^1.74.2",
-    "@urql/exchange-graphcache": "^7.2.0",
-    "@vitejs/plugin-react": "^4.3.2",
-    "graphql-ws": "^5.16.0",
-    "postgraphile": "^5.0.0-beta.32",
-    "react": "^19.0.0-rc-65a56d0e-20241020",
-    "react-dom": "^19.0.0-rc-65a56d0e-20241020",
-    "ruru": "^2.0.0-beta.13",
-    "urql": "^4.1.0",
-    "vinxi": "^0.4.3"
+    "@biomejs/biome": "^1.9.4",
+    "@dataplan/json": "^0.0.1-beta.28",
+    "@tanstack/react-router": "^1.100.0",
+    "@tanstack/router-zod-adapter": "^1.81.5",
+    "@tanstack/start": "^1.100.0",
+    "@urql/exchange-graphcache": "^7.2.2",
+    "graphql-ws": "^6.0.3",
+    "postgraphile": "^5.0.0-beta.37",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "ruru": "^2.0.0-beta.19",
+    "urql": "^4.2.1",
+    "vinxi": "^0.5.2"
   }
 }

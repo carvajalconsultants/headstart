@@ -8,6 +8,7 @@ export default defineConfig({
 	},
 	server: {
 		preset: "node-server",
+		// preset: "bun",
 		experimental: {
 			websocket: true,
 		},
