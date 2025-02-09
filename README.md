@@ -199,6 +199,7 @@ const Home = () => {
 	// Subscribe to any data changes on the server
 	useSubscription({ query: allCharitiesSubscription });
 }
+```
 
 ## Deployment
 
@@ -207,4 +208,3 @@ const Home = () => {
 3. `rm -rf node_modules`
 4. `bun install`
 5. `bun run index.mjs`
-```
