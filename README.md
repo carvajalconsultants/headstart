@@ -49,7 +49,7 @@ const preset: GraphileConfig.Preset = {
 
 ```
 // app/api.ts
-import { createGraphQLRouteHandler } from "@carvajalconsultants/headstart";
+import { createGraphQLRouteHandler } from "@carvajalconsultants/headstart/server";
 import { pgl } from "../pgl";
 
 export default createGraphQLRouteHandler(pgl);
@@ -60,7 +60,8 @@ export default createGraphQLRouteHandler(pgl);
 ```
 // app/graphql/serverProvider.tsx
 import { Client, Provider } from "urql";
-import { grafastExchange, ssr } from "@carvajalconsultants/headstart";
+import { grafastExchange } from "@carvajalconsultants/headstart/server";
+import { ssr } from "@carvajalconsultants/headstart/client";
 import { pgl } from "../../pgl";
 
 /**
@@ -78,7 +79,7 @@ export const client = new Client({
 
 ```
 // app/serverRouter.tsx
-import { ssr } from "@carvajalconsultants/headstart";
+import { ssr } from "@carvajalconsultants/headstart/client";
 import { createRouter as createTanStackRouter } from "@tanstack/react-router";
 import { Provider } from "urql";
 import { client } from "./graphql/serverProvider";
@@ -125,7 +126,7 @@ export default createStartHandler({
 
 ```
 // app/clientRouter.tsx
-import { ssr } from "@carvajalconsultants/headstart";
+import { ssr } from "@carvajalconsultants/headstart/client";
 import { createRouter as createTanStackRouter } from "@tanstack/react-router";
 import { Provider } from "urql";
 import { client } from "./graphql/clientProvider";

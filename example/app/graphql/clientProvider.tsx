@@ -1,7 +1,7 @@
 import { cacheExchange } from "@urql/exchange-graphcache";
 import { createClient as createWSClient } from "graphql-ws";
 import { Client, fetchExchange, ssrExchange, subscriptionExchange } from "urql";
-import { ssr } from "../../headstart/ssrExchange";
+import { ssr } from "@carvajalconsultants/headstart/client";
 
 const wsClient = createWSClient({
 	url: "ws://localhost:3000/api/graphql",

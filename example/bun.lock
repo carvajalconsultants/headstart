@@ -5,6 +5,7 @@
       "name": "example",
       "dependencies": {
         "@biomejs/biome": "^1.9.4",
+        "@carvajalconsultants/headstart": "^1.0.1",
         "@dataplan/json": "^0.0.1-beta.28",
         "@tanstack/react-router": "^1.100.0",
         "@tanstack/router-zod-adapter": "^1.81.5",
@@ -91,6 +92,8 @@
     "@biomejs/cli-win32-arm64": ["@biomejs/cli-win32-arm64@1.9.4", "", { "os": "win32", "cpu": "arm64" }, "sha512-tlbhLk+WXZmgwoIKwHIHEBZUwxml7bRJgk0X2sPyNR3S93cdRq6XulAZRQJ17FYGGzWne0fgrXBKpl7l4M87Hg=="],
 
     "@biomejs/cli-win32-x64": ["@biomejs/cli-win32-x64@1.9.4", "", { "os": "win32", "cpu": "x64" }, "sha512-8Y5wMhVIPaWe6jw2H+KlEm4wP/f7EW3810ZLmDlrEEy5KvBsb9ECEfu/kMWD484ijfQ8+nIi0giMgu9g1UAuuA=="],
+
+    "@carvajalconsultants/headstart": ["@carvajalconsultants/headstart@1.0.1", "", { "dependencies": { "@biomejs/biome": "^1.9.4", "@tanstack/start": "^1.100.0", "postgraphile": "^5.0.0-beta.37", "urql": "^4.2.1", "vinxi": "^0.5.2" } }, "sha512-EbAPV8iKTu0GmDdTyPjbHgMw/1ICS63ioLdEWAVXAJWKNkeQc0PRhEjRqOIg6aJhWb5rr0vN+jTQnBvBGXXTUQ=="],
 
     "@cloudflare/kv-asset-handler": ["@cloudflare/kv-asset-handler@0.3.4", "", { "dependencies": { "mime": "^3.0.0" } }, "sha512-YLPHc8yASwjNkmcDMQMY35yiWjoKAKnhUbPRszBRS0YgH+IXtsMp61j+yTcnCE3oO2DgP0U3iejLC8FTtKDC8Q=="],
 

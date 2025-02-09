@@ -1,7 +1,21 @@
 {
   "name": "@carvajalconsultants/headstart",
-  "private": true,
+  "version": "1.0.1",
+  "description": "Library to assist in integrating PostGraphile with Tanstack Start and URQL.",
+  "license": "MIT",
+  "author": "Miguel Carvajal <omar@carvajalonline.com>",
+  "repository": "github:carvajalconsultants/headstart",
   "type": "module",
+  "main": "server.ts",
+  "files": [
+    "client.ts",
+    "grafastExchange.ts",
+    "graphQLRouteHandler.ts",
+    "server.ts"
+  ],
+  "scripts": {
+    "lint": "biome check --write"
+  },
   "dependencies": {
     "@biomejs/biome": "^1.9.4",
     "@tanstack/start": "^1.100.0",

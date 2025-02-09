@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@biomejs/biome": "^1.9.4",
+    "@carvajalconsultants/headstart": "^1.0.1",
     "@dataplan/json": "^0.0.1-beta.28",
     "@tanstack/react-router": "^1.100.0",
     "@tanstack/router-zod-adapter": "^1.81.5",

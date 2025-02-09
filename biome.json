@@ -9,7 +9,7 @@
 			"recommended": true,
 			"style": {
 				"useFilenamingConvention": {
-					"level": "error",
+					"level": "info",
 					"options": {
 						"strictCase": true,
 						"requireAscii": true,
@@ -21,6 +21,6 @@
 	},
 	"files": {
 		"include": ["src/**"],
-		"ignore": ["styled-system/**", "README.md"]
+		"ignore": [".vinxi"]
 	}
 }

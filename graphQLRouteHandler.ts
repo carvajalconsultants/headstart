@@ -6,6 +6,7 @@ import { defineEventHandler, getHeader, toWebRequest } from "vinxi/http";
 import type { IncomingMessage } from "node:http";
 import type { StartAPIHandlerCallback } from "@tanstack/start/api";
 import { type Hooks, type Peer, defineHooks } from "crossws";
+import type { GrafservBase } from "grafserv";
 import type { H3Grafserv } from "grafserv/h3/v1";
 import type { PostGraphileInstance } from "postgraphile";
 import type { WebSocket } from "ws";
@@ -68,7 +69,7 @@ function makeWsHandler(instance: H3Grafserv): Partial<Hooks> {
 }
 
 // Make sure this is not instantiated more than once
-let serv;
+let serv: GrafservBase;
 
 /**
  * Actual H3 endpoint handler that intercepts requests to /api/graphql and processes with Postgraphile.

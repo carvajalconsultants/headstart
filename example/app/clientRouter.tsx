@@ -1,6 +1,6 @@
 import { createRouter as createTanStackRouter } from "@tanstack/react-router";
 import { Provider } from "urql";
-import { ssr } from "../headstart/ssrExchange";
+import { ssr } from "@carvajalconsultants/headstart/client";
 import { client } from "./graphql/clientProvider";
 import { routeTree } from "./routeTree.gen";
 

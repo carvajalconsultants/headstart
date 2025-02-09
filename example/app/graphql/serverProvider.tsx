@@ -1,6 +1,6 @@
 import { Client, Provider } from "urql";
-import { grafastExchange } from "../../headstart/grafastExchange";
-import { ssr } from "../../headstart/ssrExchange";
+import { grafastExchange } from "@carvajalconsultants/headstart/server";
+import { ssr } from "@carvajalconsultants/headstart/client";
 import { pgl } from "../../pgl";
 
 /**
