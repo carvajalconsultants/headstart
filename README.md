@@ -12,10 +12,15 @@ This library is made up of:
 
 1. Initialize Tanstack Start as per: https://tanstack.com/router/latest/docs/framework/react/start/getting-started
 
-2. Install Postgraphile as a library as per: https://tanstack.com/router/latest/docs/framework/react/start/getting-started
+2. Install Postgraphile as a library as per: https://postgraphile.org/postgraphile/next/quick-start-guide#install-postgraphile (ensure to use the Typescript files).
    Specifically, the `graphile.config.ts` and `pgl.ts`. If you need WebSocket support, make sure to add a plugin in `graphile.config.ts` as per: https://postgraphile.org/postgraphile/next/subscriptions
 
-3. Enable WebSockets in `app.config.ts` if you need it:
+3. Install Headtart & URQL:
+```
+yarn add @carvajalconsultants/headstart urql @urql/exchange-graphcache
+```
+
+4. Enable WebSockets in `app.config.ts` if you need it:
 
 ```
 // app.config.ts
@@ -30,7 +35,7 @@ export default defineConfig({
 });
 ```
 
-4. Make sure to add the `/api` endpoint to the grafserv configuration so that Ruru GraphQL client works correctly:
+5. Make sure to add the `/api` endpoint to the grafserv configuration so that Ruru GraphQL client works correctly:
 
 ```
 // graphile.config.ts
@@ -45,21 +50,22 @@ const preset: GraphileConfig.Preset = {
 };
 ```
 
-5. Add the api.ts file so that it calls our GraphQL handler. This will receive all GraphQL requests at the /api endpoint.
+6. Add the api.ts file so that it calls our GraphQL handler. This will receive all GraphQL requests at the /api endpoint.
 
 ```
 // app/api.ts
-import { createGraphQLRouteHandler } from "@carvajalconsultants/headstart/server";
+import { defaultAPIFileRouteHandler } from "@tanstack/start/api";
+import { createStartAPIHandler } from "@carvajalconsultants/headstart/server";
 import { pgl } from "../pgl";
 
-export default createGraphQLRouteHandler(pgl);
+export default createStartAPIHandler(pgl, defaultAPIFileRouteHandler);
 ```
 
-6. Now we need to configure URQL for client and server rendering, first we start with the server. Create this provider:
+7. Now we need to configure URQL for client and server rendering, first we start with the server. Create this provider:
 
 ```
 // app/graphql/serverProvider.tsx
-import { Client, Provider } from "urql";
+import { Client } from "urql";
 import { grafastExchange } from "@carvajalconsultants/headstart/server";
 import { ssr } from "@carvajalconsultants/headstart/client";
 import { pgl } from "../../pgl";
@@ -75,7 +81,7 @@ export const client = new Client({
 });
 ```
 
-7. Create the server side router which uses Grafast to execute queries:
+8. Create the server side router which uses Grafast to execute queries:
 
 ```
 // app/serverRouter.tsx
@@ -103,7 +109,7 @@ export function createRouter() {
 }
 ```
 
-8. Modify the TSR server-side rendering function to use this new router:
+9. Modify the TSR server-side rendering function to use this new router:
 
 ```
 // app/ssr.tsx
@@ -122,7 +128,7 @@ export default createStartHandler({
 })(defaultStreamHandler);
 ```
 
-9. Add the client side router which uses the fetch exchange to execute queries, mutations, etc.:
+10. Add the client side router which uses the fetch exchange to execute queries, mutations, etc.:
 
 ```
 // app/clientRouter.tsx
@@ -151,7 +157,7 @@ export function createRouter() {
 }
 ```
 
-10. Tell TSR to use our client side router:
+11. Tell TSR to use our client side router:
 
 ```
 // app/client.tsx
@@ -162,11 +168,10 @@ import { createRouter } from "./clientRouter";
 
 const router = createRouter();
 
-// biome-ignore lint: Safe enough to assume root element will be there
 hydrateRoot(document.getElementById("root")!, <StartClient router={router} />);
 ```
 
-11. Last but not least, you're ready to start using URQL on your components and pages. First we create the route using the loader option so we can pre-load data:
+12. Last but not least, you're ready to start using URQL on your components and pages. First we create the route using the loader option so we can pre-load data:
 
 ```
 export const Route = createFileRoute("/")({
@@ -183,7 +188,7 @@ export const Route = createFileRoute("/")({
 });
 ```
 
-12. Now in your component, you can query with URQL as you normally would:
+13. Now in your component, you can query with URQL as you normally would:
 
 ```
 const Home = () => {
