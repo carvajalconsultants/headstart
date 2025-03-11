@@ -1,6 +1,6 @@
 {
   "name": "@carvajalconsultants/headstart",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Library to assist in integrating PostGraphile with Tanstack Start and URQL.",
   "license": "MIT",
   "author": "Miguel Carvajal <omar@carvajalonline.com>",
@@ -16,7 +16,7 @@
   "scripts": {
     "lint": "biome check --write"
   },
-  "dependencies": {
+  "peerDependencies": {
     "@tanstack/start": "^1.100.0",
     "postgraphile": "^5.0.0-beta.37",
     "urql": "^4.2.1",
