@@ -17,7 +17,7 @@ This library is made up of:
 
 3. Install Headtart & URQL:
 ```
-yarn add @carvajalconsultants/headstart urql @urql/exchange-graphcache
+yarn add @carvajalconsultants/headstart urql @urql/exchange-graphcache @urql/exchange-auth
 ```
 
 4. Enable WebSockets in `app.config.ts` if you need it:
