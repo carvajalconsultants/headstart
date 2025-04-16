@@ -16,13 +16,13 @@ This library is made up of:
    Specifically, the `graphile.config.ts` and `pgl.ts`. If you need WebSocket support, make sure to add a plugin in `graphile.config.ts` as per: https://postgraphile.org/postgraphile/next/subscriptions
 
 3. Install Headtart & URQL:
-```
+```bash
 yarn add @carvajalconsultants/headstart urql @urql/exchange-graphcache @urql/exchange-auth
 ```
 
 4. Enable WebSockets in `app.config.ts` if you need it:
 
-```
+```typescript
 // app.config.ts
 import { defineConfig } from "@tanstack/react-start/config";
 
@@ -37,7 +37,7 @@ export default defineConfig({
 
 5. Make sure to add the `/api` endpoint to the grafserv configuration so that Ruru GraphQL client works correctly:
 
-```
+```typescript
 // graphile.config.ts
 const preset: GraphileConfig.Preset = {
     ...
@@ -52,7 +52,7 @@ const preset: GraphileConfig.Preset = {
 
 6. Add the api.ts file so that it calls our GraphQL handler. This will receive all GraphQL requests at the /api endpoint.
 
-```
+```typescript
 // app/api.ts
 import { defaultAPIFileRouteHandler } from "@tanstack/react-start/api";
 import { createStartAPIHandler } from "@carvajalconsultants/headstart/server";
@@ -63,7 +63,7 @@ export default createStartAPIHandler(pgl, defaultAPIFileRouteHandler);
 
 7. Now we need to configure URQL for client and server rendering, first we start with the server. Create this provider:
 
-```
+```typescript
 // app/graphql/serverProvider.tsx
 import { Client } from "urql";
 import { grafastExchange } from "@carvajalconsultants/headstart/server";
@@ -83,7 +83,7 @@ export const client = new Client({
 
 8. Now the client side for URQL:
 
-```
+```typescript
 // app/graphql/clientProvider.tsx
 import { ssr } from "@carvajalconsultants/headstart/client";
 import { authExchange } from "@urql/exchange-auth";
@@ -164,7 +164,7 @@ export const client = new Client({
 
 9. Create the server side router which uses Grafast to execute queries:
 
-```
+```typescript
 // app/serverRouter.tsx
 import { ssr } from "@carvajalconsultants/headstart/client";
 import { createRouter as createTanStackRouter } from "@tanstack/react-router";
@@ -194,7 +194,7 @@ export function createRouter() {
 
 10. Modify the TSR server-side rendering function to use this new router:
 
-```
+```typescript
 /* eslint-disable */
 // app/ssr.tsx
 /// <reference types="vinxi/types/server" />
@@ -214,7 +214,7 @@ export default createStartHandler({
 
 11. Add the client side router which uses the fetch exchange to execute queries, mutations, etc.:
 
-```
+```typescript
 // app/clientRouter.tsx
 import { ssr } from "@carvajalconsultants/headstart/client";
 import { createRouter as createTanStackRouter } from "@tanstack/react-router";
@@ -246,7 +246,7 @@ export function createRouter() {
 
 12. Tell TSR to use our client side router:
 
-```
+```typescript
 // app/client.tsx
 /// <reference types="vinxi/types/client" />
 import { StartClient } from "@tanstack/start";
@@ -260,7 +260,7 @@ hydrateRoot(document.getElementById("root")!, <StartClient router={router} />);
 
 13. Last but not least, you're ready to start using URQL on your components and pages. First we create the route using the loader option so we can pre-load data:
 
-```
+```typescript
 export const Route = createFileRoute("/")({
 	...
 	validateSearch: zodSearchValidator(paramSchema),
@@ -277,7 +277,7 @@ export const Route = createFileRoute("/")({
 
 14. Now in your component, you can query with URQL as you normally would:
 
-```
+```typescript
 const Home = () => {
 	const { page } = Route.useSearch();
 
