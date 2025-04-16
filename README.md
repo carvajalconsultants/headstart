@@ -24,7 +24,7 @@ yarn add @carvajalconsultants/headstart urql @urql/exchange-graphcache
 
 ```
 // app.config.ts
-import { defineConfig } from "@tanstack/start/config";
+import { defineConfig } from "@tanstack/react-start/config";
 
 export default defineConfig({
 	server: {
@@ -54,7 +54,7 @@ const preset: GraphileConfig.Preset = {
 
 ```
 // app/api.ts
-import { defaultAPIFileRouteHandler } from "@tanstack/start/api";
+import { defaultAPIFileRouteHandler } from "@tanstack/react-start/api";
 import { createStartAPIHandler } from "@carvajalconsultants/headstart/server";
 import { pgl } from "../pgl";
 
@@ -81,7 +81,88 @@ export const client = new Client({
 });
 ```
 
-8. Create the server side router which uses Grafast to execute queries:
+8. Now the client side for URQL:
+
+```
+// app/graphql/clientProvider.tsx
+import { ssr } from "@carvajalconsultants/headstart/client";
+import { authExchange } from "@urql/exchange-auth";
+import { cacheExchange } from "@urql/exchange-graphcache";
+//import { relayPagination } from "@urql/exchange-graphcache/extras";
+import { Client, fetchExchange } from "urql";
+
+/**
+ * Creates an authentication exchange for handling secure GraphQL operations.
+ * This exchange ensures that all GraphQL requests are properly authenticated
+ * and handles authentication failures gracefully.
+ *
+ * @returns {Object} Authentication configuration object
+ * @returns {Function} .addAuthToOperation - Prepares operations with auth context
+ * @returns {Function} .didAuthError - Detects authentication failures after server request
+ * @returns {Function} .refreshAuth - Handles auth token refresh
+ */
+const auth = authExchange(async () => {
+  //TODO Implement authentication checking for the client s ide
+  await new Promise((resolve) => {
+    setTimeout(() => {
+      console.log("IMPLEMENT CLIENT AUTH CHECK");
+      resolve();
+    }, 2000);
+  });
+
+  return {
+    /**
+     * Processes each GraphQL operation to include authentication context.
+     * Currently configured as a pass-through as tokens are in cookies.
+     *
+     * @param {Operation} operation - The GraphQL operation to authenticate
+     * @returns {Operation} The operation with authentication context
+     */
+    addAuthToOperation: (operation) => operation,
+
+    /**
+     * Identifies when an operation has failed due to authentication issues.
+     * Used to trigger authentication refresh flows when needed.
+     *
+     * @param {Error} error - The GraphQL error response
+     * @returns {boolean} True if the error was caused by authentication failure
+     */
+    didAuthError: (error) => error.graphQLErrors.some((e) => e.extensions?.code === "FORBIDDEN"),
+
+    /**
+     * Handles refreshing authentication when it becomes invalid.
+     * Currently implemented as a no-op as token refresh is handled by getSession().
+     */
+    refreshAuth: async () => {
+      /* No-op, this is done in getSession() */
+    },
+  };
+});
+
+/**
+ * Configured GraphQL client for the application.
+ * Provides a centralized way to make authenticated GraphQL requests with
+ * proper caching and server-side rendering support.
+ */
+export const client = new Client({
+  url: "http://localhost:3000/api/graphql",
+  exchanges: [
+    cacheExchange({
+      resolvers: {
+        Query: {
+          // Implements relay-style pagination for fills pending match
+          //queryName: relayPagination(),
+        },
+      },
+    }),
+    auth,
+    ssr,
+    fetchExchange,
+  ],
+});
+```
+
+9. Create the server side router which uses Grafast to execute queries:
 
 ```
 // app/serverRouter.tsx
@@ -90,6 +171,8 @@ import { createRouter as createTanStackRouter } from "@tanstack/react-router";
 import { Provider } from "urql";
 import { client } from "./graphql/serverProvider";
 import { routeTree } from "./routeTree.gen";
+
+import type { ReactNode } from "react";
 
 export function createRouter() {
 	const router = createTanStackRouter({
@@ -101,20 +184,21 @@ export function createRouter() {
 		// Send data to client so URQL can be hydrated.
 		dehydrate: () => ({ initialData: ssr.extractData() }),
 
-        // Wrap our entire route with the URQL provider so we can execute queries and mutations.
-		Wrap: ({ children }) => <Provider value={client}>{children}</Provider>,
+		// Wrap our entire route with the URQL provider so we can execute queries and mutations.
+		Wrap: ({ children }: { children: ReactNode }) => <Provider value={client}>{children}</Provider>,
 	});
 
 	return router;
 }
 ```
 
-9. Modify the TSR server-side rendering function to use this new router:
+10. Modify the TSR server-side rendering function to use this new router:
 
 ```
+/* eslint-disable */
 // app/ssr.tsx
 /// <reference types="vinxi/types/server" />
-import { getRouterManifest } from "@tanstack/start/router-manifest";
+import { getRouterManifest } from "@tanstack/react-start/router-manifest";
 import {
 	createStartHandler,
 	defaultStreamHandler,
@@ -128,7 +212,7 @@ export default createStartHandler({
 })(defaultStreamHandler);
 ```
 
-10. Add the client side router which uses the fetch exchange to execute queries, mutations, etc.:
+11. Add the client side router which uses the fetch exchange to execute queries, mutations, etc.:
 
 ```
 // app/clientRouter.tsx
@@ -138,6 +222,9 @@ import { Provider } from "urql";
 import { client } from "./graphql/clientProvider";
 import { routeTree } from "./routeTree.gen";
 
+import type { ReactNode } from "react";
+import type { SSRData } from "urql";
+
 export function createRouter() {
 	const router = createTanStackRouter({
 		routeTree,
@@ -146,18 +233,18 @@ export function createRouter() {
 		},
 		hydrate: (dehydrated) => {
 			// Hydrate URQL with data passed by TSR, this is generated by dehydrate function in server router.
-			ssr.restoreData(dehydrated.initialData);
+			ssr.restoreData(dehydrated.initialData as SSRData);
 		},
 
-        // Wrap our entire route with the URQL provider so we can execute queries and mutations.
-		Wrap: ({ children }) => <Provider value={client}>{children}</Provider>,
+		// Wrap our entire route with the URQL provider so we can execute queries and mutations.
+		Wrap: ({ children }: { children: ReactNode }) => <Provider value={client}>{children}</Provider>,
 	});
 
 	return router;
 }
 ```
 
-11. Tell TSR to use our client side router:
+12. Tell TSR to use our client side router:
 
 ```
 // app/client.tsx
@@ -171,7 +258,7 @@ const router = createRouter();
 hydrateRoot(document.getElementById("root")!, <StartClient router={router} />);
 ```
 
-12. Last but not least, you're ready to start using URQL on your components and pages. First we create the route using the loader option so we can pre-load data:
+13. Last but not least, you're ready to start using URQL on your components and pages. First we create the route using the loader option so we can pre-load data:
 
 ```
 export const Route = createFileRoute("/")({
@@ -188,7 +275,7 @@ export const Route = createFileRoute("/")({
 });
 ```
 
-13. Now in your component, you can query with URQL as you normally would:
+14. Now in your component, you can query with URQL as you normally would:
 
 ```
 const Home = () => {
@@ -209,8 +296,8 @@ const Home = () => {
 
 ## Deployment
 
-1. Run `bun run build`
+1. Run `yarn run build`
 2. `cd .output/server`
 3. `rm -rf node_modules`
-4. `bun install`
-5. `bun run index.mjs`
+4. `yarn install`
+5. `yarn run index.mjs`
