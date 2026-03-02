@@ -3,13 +3,11 @@ import { makeGraphQLWSConfig } from "postgraphile/grafserv";
 import { grafserv } from "postgraphile/grafserv/h3/v1";
 import { defineEventHandler, getHeader, toWebRequest } from "vinxi/http";
 
-import type { IncomingMessage } from "node:http";
 import type { StartAPIHandlerCallback } from "@tanstack/start/api";
-import { type Hooks, type Peer, defineHooks } from "crossws";
+import { type Hooks, type Message, type Peer } from "crossws";
 import type { GrafservBase } from "grafserv";
 import type { H3Grafserv } from "grafserv/h3/v1";
 import type { PostGraphileInstance } from "postgraphile";
-import type { WebSocket } from "ws";
 
 /**
  * This is an H3 handler that does all of the GraphQL request processing in TSR (including Subscriptions).
@@ -17,53 +15,77 @@ import type { WebSocket } from "ws";
  * Code is basically from: https://discord.com/channels/489127045289476126/498852330754801666/1260251871877271704
  */
 
+type PeerState = {
+	onMessage: (data: string) => Promise<void>;
+	closed: (code: number, reason: string) => void;
+};
+
 /**
- * TODO: make it generic when crossws implements the WS API (Peer.close, Peer.protocol)
- * instead of accessing the socket directly through context (server agnostic)
- * https://github.com/unjs/crossws/issues/23
- * https://github.com/unjs/crossws/issues/16
+ * Builds the crossws WebSocket hooks for graphql-ws.
+ *
+ * Uses the platform-agnostic crossws peer API (peer.send, peer.close, peer.id)
+ * instead of the Node.js ws-library EventEmitter API (socket.on, socket.send(cb)).
+ * This makes subscriptions work on both Node.js and Bun runtimes.
  */
 function makeWsHandler(instance: H3Grafserv): Partial<Hooks> {
 	const graphqlWsServer = makeServer(makeGraphQLWSConfig(instance));
+	const peerStates = new Map<string, PeerState>();
 
 	return {
-		open(peer) {
-			// TODO Getting the socket like this causes problems deploying to bun. We really need a better websocket implementation with crossws
-			// Websocket from the H3 instance, so this is the browser client
-			const socket = peer.websocket as Required<WebSocket>;
+		open(peer: Peer) {
+			// graphql-ws registers the message callback synchronously inside opened(),
+			// so messageCallback is guaranteed to be set before opened() returns.
+			let messageCallback: ((data: string) => Promise<void>) | null = null;
 
-			// a new socket opened, let graphql-ws take over
 			const closed = graphqlWsServer.opened(
 				{
-					protocol: socket.protocol, // will be validated
-					send: (data) =>
-						new Promise((resolve, reject) => {
-							socket.send(data, (err: Error) =>
-								err ? reject(err) : resolve(),
-							);
-						}),
-					close: (code, reason) => {
-						socket.close(code, reason);
+					// crossws polyfills peer.websocket.protocol from the Sec-WebSocket-Protocol header
+					protocol: peer.websocket.protocol ?? "",
+
+					// peer.send() works on both Node.js and Bun — no callback, no hanging Promise
+					send: async (data) => {
+						peer.send(data);
 					},
+
+					close: (code, reason) => {
+						peer.close(code, reason);
+					},
+
 					onMessage: (cb) => {
-						socket.on("message", async (event) => {
-							try {
-								await cb(event.toString());
-							} catch (err) {
-								try {
-									socket.close(CloseCode.InternalServerError, err.message);
-								} catch {
-									// noop
-								}
-							}
-						});
+						messageCallback = cb;
 					},
 				},
-				// pass values to the `extra` field in the context
-				//{ peer, socket, request },
 				{},
 			);
-			// socket.once("close", (_socket, code: number, reason: Buffer) => closed(code, reason.toString()));
+
+			if (messageCallback) {
+				peerStates.set(peer.id, { onMessage: messageCallback, closed });
+			}
+		},
+
+		// crossws calls this hook when a message arrives — works on both Node.js and Bun
+		async message(peer: Peer, message: Message) {
+			const state = peerStates.get(peer.id);
+			if (!state) return;
+
+			try {
+				await state.onMessage(message.text());
+			} catch (err) {
+				try {
+					peer.close(CloseCode.InternalServerError, (err as Error).message);
+				} catch {
+					// noop
+				}
+			}
+		},
+
+		// Cleans up per-peer state when the connection closes
+		close(peer: Peer, details: { code?: number; reason?: string }) {
+			const state = peerStates.get(peer.id);
+			if (!state) return;
+
+			state.closed(details.code ?? 1000, details.reason ?? "");
+			peerStates.delete(peer.id);
 		},
 	};
 }
